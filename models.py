@@ -1,11 +1,19 @@
 from django.db import models
+from django.utils.translation import ugettext_lazy as _
 
 # Create your models here.
 class Entry(models.Model):
-    pub_date = models.DateTimeField('date published')
-    slug = models.SlugField(unique_for_date='pub_date')
+    """Entry Model."""
+    STATUS_CHOICES = (
+        (1, _('Draft')),
+        (2, _('Publish')),
+    )
 
-    modified = models.DateTimeField('last modified')
+    pub_date = models.DateTimeField(_('date published'))
+    slug = models.SlugField(_('slug'),unique_for_date='pub_date')
+    status = models.IntegerField(_('status'), choices=STATUS_CHOICES, default=2)
+
+    modified = models.DateTimeField(_('last modified'))
     modified.editable = False
     modified.auto_now = True
 
@@ -15,7 +23,7 @@ class Entry(models.Model):
     tags = models.ManyToManyField('Tag')
 
     class Meta:
-        verbose_name_plural = 'entries'
+        verbose_name_plural = _('entries')
 
     def __unicode__(self):
         return self.headline

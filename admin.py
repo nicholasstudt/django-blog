@@ -4,25 +4,27 @@ from blog.models import Author
 from blog.models import Entry
 from blog.models import Tag
 
-# Can't put manytomany inline ?
-class TagInline(admin.TabularInline):
-    model = Tag
+class AuthorAdmin(admin.ModelAdmin):
+    fieldsets = [
+        (None,      {'fields':['name','email']}),
+        ('Advanced',    {'fields':['ident'], 'classes': ['collapse'] }),
+        ('Content',     {'fields':['content']}),
+    ]
+    list_display = ('name','email')
+    prepopulated_fields = {'ident': ('name',)}
 
 class EntryAdmin(admin.ModelAdmin):
     fieldsets = [
-        (None,      {'fields':['headline','author','pub_date']}),
+        (None,      {'fields':['headline','author','status','pub_date']}),
         ('Advanced',    {'fields':['slug'], 'classes': ['collapse'] }),
         ('Content',     {'fields':['content','tags']}),
     ]
-#    inlines = [TagInline]
     prepopulated_fields = {'slug': ('headline',)}
     list_display = ('headline','author','pub_date',)
-    list_filter = ('pub_date',)
+    list_filter = ('status','pub_date',)
     search_fields = ['headline']
     date_hierarchy = 'pub_date'
 
-
-
 admin.site.register(Entry, EntryAdmin)
-admin.site.register(Author)
+admin.site.register(Author, AuthorAdmin)
 admin.site.register(Tag)
