@@ -12,6 +12,7 @@ class Entry(models.Model):
     pub_date = models.DateTimeField(_('date published'))
     slug = models.SlugField(_('slug'),unique_for_date='pub_date')
     status = models.IntegerField(_('status'), choices=STATUS_CHOICES, default=2)
+    comments = models.BooleanField(_('allow comments'), default=True)
 
     modified = models.DateTimeField(_('last modified'))
     modified.editable = False

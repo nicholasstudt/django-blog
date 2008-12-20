@@ -6,18 +6,18 @@ from blog.models import Tag
 
 class AuthorAdmin(admin.ModelAdmin):
     fieldsets = [
-        (None,      {'fields':['name','email']}),
-        ('Advanced',    {'fields':['ident'], 'classes': ['collapse'] }),
-        ('Content',     {'fields':['content']}),
+        (None, {'fields':['name','email']}),
+        ('Advanced', {'fields':['ident'], 'classes': ['collapse'] }),
+        ('Content', {'fields':['content']}),
     ]
     list_display = ('name','email')
     prepopulated_fields = {'ident': ('name',)}
 
 class EntryAdmin(admin.ModelAdmin):
     fieldsets = [
-        (None,      {'fields':['headline','author','status','pub_date']}),
-        ('Advanced',    {'fields':['slug'], 'classes': ['collapse'] }),
-        ('Content',     {'fields':['content','tags']}),
+        (None, {'fields':['headline','author','status','pub_date']}),
+        ('Advanced', {'fields':['slug','comments'], 'classes': ['collapse'] }),
+        ('Content', {'fields':['content','tags']}),
     ]
     prepopulated_fields = {'slug': ('headline',)}
     list_display = ('headline','author','pub_date',)
