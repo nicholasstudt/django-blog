@@ -1,0 +1,23 @@
+{% extends "blog/base.html" %}
+
+
+{% block title %}entry_archive_month.html Post archive for {{ month|date:"F Y" }}{% endblock %}
+{% block body_class %}{{ block.super }} entry_archive_month{% endblock %}
+
+
+{% block content_title %}
+  <h2>Post archive for {{ month|date:"F Y" }}</h2>
+{% endblock %}
+
+
+{% block content %}
+	<div class="entry_list">
+		{% for entry in object_list %}
+		<div>
+		<h3 class="title"><a href="{{ entry.get_absolute_url }}">{{ entry.headline }}</a></h3>
+		<p class="date">{{ entry.pub_date|date:"Y F d" }}</p>
+		<p class="tease">{{ entry.content }}</p>
+		</div>
+		{% endfor %}
+	</div>
+{% endblock %}
