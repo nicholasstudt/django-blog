@@ -26,18 +26,14 @@ urlpatterns = patterns('blog.views',
         'author_detail', 
         name="author_detail"),
 
-#    url(r'^author/$', 
-#        'author_list', 
-#        name="author_list"),
-
     # /search
     url(r'^search/$', 
         'entry_search',
         name="entry_search"),
 
-    # / -> frontpage  This isn't needed. 
-#    url(r'^page/(?P<page>\d+)$', 'entry_list'),
+    url(r'^comments/', include('django.contrib.comments.urls')),
 
     url(r'^$', 
-        'entry_list'),
+        'entry_list',
+        name="entry_index"),
 )

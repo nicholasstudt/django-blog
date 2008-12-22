@@ -4,17 +4,15 @@
 {% block body_class %}{{ block.super }} post_list{% endblock %}
 
 {% block content_title %}
-  <h2>Post archive</h2>
     {{ error_message }}
 {% endblock %}
 
 {% block content %}
   <div class="post_list">
-    {% for post in object_list %}
+    {% for author in object_list %}
     <div>
-      <h3 class="title"><a href="{{ post.get_absolute_url }}">{{ post.name }}</a></h3>
-      <p class="date">{{ post.publish|date:"Y F d" }}</p>
-      <p class="tease">{{ post.tease }}</p>
+      <h3 class="title"><a href="{{ author.get_absolute_url }}">{{ author.name }}</a></h3>
+      <p class="tease">{{ author.content }}</p>
     </div>
     {% endfor %}
   </div>

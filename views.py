@@ -1,7 +1,8 @@
 # Create your views here.
 from django.http import HttpResponseRedirect, HttpResponse, Http404
 from django.shortcuts import render_to_response, get_object_or_404
-from django.template import Context, loader
+from django.template import Context, loader, RequestContext
+from django.db.models import Q
 from django.views.generic import date_based, list_detail
 
 from blog.models import Entry, Author, Tag
@@ -30,8 +31,20 @@ def entry_detail(request, slug, year, month, day, **kwargs):
     )
 entry_detail.__doc__ = date_based.object_detail.__doc__
 
-def entry_search(request):
-    pass
+def entry_search(request, template_name='blog/entry_search.html'):
+    response = {}
+    # This should check tags, and headlines as well.
+    if request.POST:
+        search_term = '%s' % request.POST['q']
+        post_list = Entry.objects.published().filter(
+                                Q(content__icontains=search_term) |
+                                #Q(tags__icontains=search_term) |
+                                Q(headline__icontains=search_term) )
+        response = {'object_list': post_list, 'search_term':search_term}
+    return render_to_response(template_name,     
+                                response,
+                                context_instance=RequestContext(request))
+        
 
 def entry_archive_year(request, year, **kwargs):
     return date_based.archive_year(

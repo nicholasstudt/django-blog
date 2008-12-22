@@ -1,40 +1,22 @@
 {% extends "blog/base.html" %}
 
-{% block title %}Overide Title Here{% endblock %}
-{% block body_class %}{{ block.super }} post_list{% endblock %}
+{% block title %}Post archive for {{ day|date:"d F Y" }}{% endblock %}
+
+{% block body_class %}{{ block.super }} post_archive_day{% endblock %}
 
 {% block content_title %}
-  <h2>Post archive</h2>
+  <h2>Post archive for {{ day|date:"d F Y" }}</h2>
 {% endblock %}
 
-{% block content %}
-  <div class="post_list">
-    {% for entry in object_list %}
-    <div>
-      <h3 class="title"><a href="{{ entry.get_absolute_url }}">{{ entry.headline }}</a></h3>
-      <p class="date">{{ entry.pub_date|date:"d F Y" }}</p>
-      <p>Tags:
-        {% for tag in entry.tags.all %}
-             {{ tag.tag }}{% if not forloop.last %}, {% endif %}
-        {% endfor %}
-      </p>
-      <p class="tease">
-        <!-- Truncatewords will limit the frontpage to what we want -->
-        <a href="{{ entry.author.get_absolute_url}}">{{ entry.author }}</a> {{ entry.content|truncatewords:"10" }}</p>
 
-    </div>
-    {% endfor %}
-  </div>
-  
-  {% if is_paginated %}
-  <p class="pagination">
-    {% if has_next %}
-    <a class="older" href="?page={{ next }}">Older</a>
-    {% endif %}
-    {% if has_next and has_previous %} | {% endif %}
-    {% if has_previous %}
-    <a class="newer" href="?page={{ previous }}">Newer</a>
-    {% endif %}
-  </p>
-  {% endif %}
+{% block content %}
+<div class="post_list">
+	{% for entry in object_list %}
+	<div>
+		<h3 class="title"><a href="{{ entry.get_absolute_url }}">{{ entry.headline }}</a></h3>
+		<p class="date">{{ entry.pub_date|date:"Y F d" }}</p>
+		<p class="tease">{{ entry.content }}</p>
+	</div>
+	{% endfor %}
+</div>
 {% endblock %}
