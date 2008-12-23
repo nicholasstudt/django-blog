@@ -22,7 +22,8 @@ class Entry(models.Model):
 
     headline = models.CharField(max_length=250) 
     author = models.ForeignKey('Author')
-    content = models.TextField(help_text='This is help text');
+    abstract = models.TextField(help_text=_('Entry Abstract'), blank=True);
+    content = models.TextField(help_text=_('Entry Content'));
     tags = models.ManyToManyField('Tag')
 
     objects = PublishedManager()

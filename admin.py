@@ -17,7 +17,7 @@ class EntryAdmin(admin.ModelAdmin):
     fieldsets = [
         (None, {'fields':['headline','author','status','pub_date']}),
         ('Advanced', {'fields':['slug','comments'], 'classes': ['collapse'] }),
-        ('Content', {'fields':['content','tags']}),
+        ('Content', {'fields':['abstract','content','tags']}),
     ]
     prepopulated_fields = {'slug': ('headline',)}
     list_display = ('headline','author','pub_date',)
