@@ -9,9 +9,8 @@
 <body id="{% block body_id %}{% endblock %}">
   <div id="body">
     {% block body %}
-      <div>
-        {% block content_title %}{% endblock %}
-      </div>
+      <div><h1>{% block content_title %}{% endblock %}</h1></div>
+
       <div class="content">
         {% block content %}{% endblock %}
       </div>

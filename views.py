@@ -85,8 +85,8 @@ entry_archive_day.__doc__ = date_based.archive_day.__doc__
 def author_detail(request, ident, **kwargs):
     return list_detail.object_detail(
             request,
-            slug_field = 'ident',
             slug = ident,
+            slug_field = 'ident',
             queryset = Author.objects.all(),
             **kwargs )
 author_detail.__doc__ = list_detail.object_detail.__doc__
