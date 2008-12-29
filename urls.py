@@ -1,39 +1,49 @@
 from django.conf.urls.defaults import *
+from blog.feeds import LatestEntriesByTag, LatestEntries
 
-urlpatterns = patterns('blog.views',
+feeds = {   
+    'latest': LatestEntries,
+    'tags': LatestEntriesByTag,
+}
+
+urlpatterns = patterns('',
 
     # /article/<section>/<date "YYYY-MM-DD">/<ident> -> One article
     # /YYYY-MM-DD/slug
     url(r'^(?P<year>\d{4})-(?P<month>\d{1,2})-(?P<day>\d{1,2})/(?P<slug>[-\w]+)/$', 
-        'entry_detail', 
+        'blog.views.entry_detail', 
         name="entry_detail"),
 
     # /archive/<section>/<date-part "YYYY-MM-DD">
     url(r'^(?P<year>\d{4})-(?P<month>\d{1,2})-(?P<day>\d{1,2})/$',
-        'entry_archive_day', 
+        'blog.views.entry_archive_day', 
         name="archive_day"),
 
     url(r'^(?P<year>\d{4})-(?P<month>\d{1,2})/$', 
-        'entry_archive_month',
+        'blog.views.entry_archive_month',
         name="archive_month"),
 
     url(r'^(?P<year>\d{4})/$', 
-        'entry_archive_year',
+        'blog.views.entry_archive_year',
         name="archive_year"),
 
     # /author/<author ident>
     url(r'^author/(?P<ident>[-\w]+)/$', 
-        'author_detail', 
+        'blog.views.author_detail', 
         name="author_detail"),
 
     # /search
     url(r'^search/$', 
-        'entry_search',
+        'blog.views.entry_search',
         name="entry_search"),
+
+    # /feeds/tags, /feeds/latest,
+    url(r'^feeds/(?P<url>.*)/$', 'django.contrib.syndication.views.feed',
+            {'feed_dict': feeds}),
 
     url(r'^comments/', include('django.contrib.comments.urls')),
 
     url(r'^$', 
-        'entry_list',
+        'blog.views.entry_list',
         name="entry_index"),
 )
