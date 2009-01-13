@@ -1,7 +1,7 @@
 # Create your views here.
-from django.http import HttpResponseRedirect, HttpResponse, Http404
-from django.shortcuts import render_to_response, get_object_or_404
-from django.template import Context, loader, RequestContext
+from django import http
+from django.shortcuts import render_to_response
+from django.template import loader, RequestContext
 from django.db.models import Q
 from django.views.generic import date_based, list_detail
 
@@ -16,6 +16,21 @@ def entry_list(request, page=0, **kwargs):
         **kwargs
     )
 entry_list.__doc__ = list_detail.object_list.__doc__
+
+def tag_list(request, ident, **kwargs):
+
+    # Should this take more than one tag at a time?
+    try: 
+        tid = Tag.objects.filter(tag__exact=ident).values_list('id', flat=True)[0]
+    except IndexError:
+        raise http.Http404, 'No tag found matching the query'
+
+    return list_detail.object_list(
+        request,
+        queryset = Entry.objects.published(tags__id__exact=tid),
+        **kwargs
+    )
+tag_list.__doc__ = list_detail.object_list.__doc__
 
 def entry_detail(request, slug, year, month, day, **kwargs):
     return date_based.object_detail(

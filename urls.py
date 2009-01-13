@@ -27,6 +27,10 @@ urlpatterns = patterns('',
         'blog.views.entry_archive_year',
         name="archive_year"),
 
+    url(r'^tags/(?P<ident>[-\w]+)/$', 
+        'blog.views.tag_list', 
+        name="tag_list"),
+
     # /author/<author ident>
     url(r'^author/(?P<ident>[-\w]+)/$', 
         'blog.views.author_detail', 

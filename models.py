@@ -1,4 +1,6 @@
 from django.db import models
+from django.conf import settings
+from django.contrib.sites.models import Site
 from django.utils.translation import ugettext_lazy as _
 
 from blog.managers import PublishedManager
@@ -10,6 +12,12 @@ class Entry(models.Model):
         (1, _('Draft')),
         (2, _('Publish')),
     )
+
+    try: 
+        sid = settings.SITE_ID 
+    except AttributeError: 
+        from django.core.exceptions import ImproperlyConfigured 
+        raise ImproperlyConfigured("You're using the Django \"sites framework\" without having set the SITE_ID setting. Create a site in your database and set the SITE_ID setting to fix this error.") 
 
     pub_date = models.DateTimeField(_('date published'))
     slug = models.SlugField(_('slug'),unique_for_date='pub_date')
@@ -24,6 +32,7 @@ class Entry(models.Model):
     author = models.ForeignKey('Author')
     abstract = models.TextField(help_text=_('Entry Abstract'), blank=True);
     content = models.TextField(help_text=_('Entry Content'));
+    sites = models.ManyToManyField(Site, default=(sid,))
     tags = models.ManyToManyField('Tag')
 
     objects = PublishedManager()
@@ -71,3 +80,8 @@ class Tag(models.Model):
 
     def __unicode__(self):
         return( u'%s' % self.tag )
+
+    @models.permalink
+    def get_absolute_url(self):
+        return('tag_list', (), { 'ident': self.tag })
+

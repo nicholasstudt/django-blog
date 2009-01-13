@@ -16,12 +16,12 @@ class AuthorAdmin(admin.ModelAdmin):
 class EntryAdmin(admin.ModelAdmin):
     fieldsets = [
         (None, {'fields':['headline','author','status','pub_date']}),
-        ('Advanced', {'fields':['slug','comments'], 'classes': ['collapse'] }),
+        ('Advanced', {'fields':['sites','slug','comments'], 'classes': ['collapse'] }),
         ('Content', {'fields':['abstract','content','tags']}),
     ]
     prepopulated_fields = {'slug': ('headline',)}
     list_display = ('headline','author','pub_date',)
-    list_filter = ('status','pub_date',)
+    list_filter = ('sites','status','pub_date',)
     search_fields = ['headline']
     date_hierarchy = 'pub_date'
 
