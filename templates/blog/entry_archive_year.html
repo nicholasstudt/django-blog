@@ -1,13 +1,11 @@
 {% extends "blog/base.html" %}
 
-{% block title %}Post archive for {{ year }}{% endblock %}
-{% block body_class %}{{ block.super }} post_archive_year{% endblock %}
-
-{% block content_title %}
-	<h2>Post archive for {{ year }}</h2>
-{% endblock %}
+{% block title %}{{ block.super }} Archive{% endblock %}
+{% block content_title %}Yearly archive for {{ year }}{% endblock %}
+{% block body_class %}{{ block.super }} entry_archive_year{% endblock %}
 
 {% block content %}
+	<h1>Fixme, this is ... not right</h1>
 <ul class="link_list">
 	{% for month in date_list %}
 	<li><a href="{% url entry_index %}{{ year }}-{{ month|date:"m" }}/">{{ month|date:"F" }}</a></li>

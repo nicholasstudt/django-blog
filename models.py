@@ -24,9 +24,7 @@ class Entry(models.Model):
     status = models.IntegerField(_('status'), choices=STATUS_CHOICES, default=2)
     comments = models.BooleanField(_('allow comments'), default=True)
 
-    modified = models.DateTimeField(_('last modified'))
-    modified.editable = False
-    modified.auto_now = True
+    modified = models.DateTimeField(_('last modified'), editable=False, auto_now=True)
 
     headline = models.CharField(max_length=250) 
     author = models.ForeignKey('Author')
