@@ -42,6 +42,9 @@ urlpatterns = patterns('',
         name="entry_search"),
 
     # /feeds/tags, /feeds/latest,
+    url(r'^feed/$', 'django.contrib.syndication.views.feed',
+            {'feed_dict': LatestEntries}),
+
     url(r'^feeds/(?P<url>.*)/$', 'django.contrib.syndication.views.feed',
             {'feed_dict': feeds}),
 

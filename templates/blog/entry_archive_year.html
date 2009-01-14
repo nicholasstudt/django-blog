@@ -1,16 +1,64 @@
 {% extends "blog/base.html" %}
 
-{% block title %}{{ block.super }} Archive{% endblock %}
-{% block content_title %}Yearly archive for {{ year }}{% endblock %}
+{% block title %}{{ block.super }} Archive for {{ year }} {% endblock %}
+{% block content_title %}{{ year }}{% endblock %}
 {% block body_class %}{{ block.super }} entry_archive_year{% endblock %}
 
 {% block content %}
-	<h1>Fixme, this is ... not right</h1>
-<ul class="link_list">
-	{% for month in date_list %}
-	<li><a href="{% url entry_index %}{{ year }}-{{ month|date:"m" }}/">{{ month|date:"F" }}</a></li>
-	{% endfor %}
-</ul>
+	<div class="archive" >
+		<h1>{{ year }}</h1>
+
+	{% load comments %}
+ 
+    {% for entry in object_list %}
+		{% get_comment_count for entry as comment_count %}
+<div class="article">
+	<div class="article_header">
+		<h1 class="topic">
+			<a href="{{ entry.get_absolute_url }}">{{ entry.headline }}</a>
+		</h1>
+		<h2 class="date"> 
+			{{ entry.pub_date|date:"l, j F Y G:i T" }}
+		</h2>
+		<h3 class="author">
+			Posted by: 
+			<a href="{{ entry.author.get_absolute_url}}">{{ entry.author }}</a>
+		</h3>
+		<h4 class="category">
+			File Under: 
+	        {% for tag in entry.tags.all %}
+				<a href="{{ tag.get_absolute_url }}">{{ tag.tag }}</a>{% if not forloop.last %}, {% endif %}
+			{% endfor %}
+		</h4>
+	</div>
+	<div class="content" >
+		{{ entry.abstract|safe }}
+	</div>
+
+	<div class="article_comments" >
+		<a href="{{ entry.get_absolute_url }}">Comment{{ comment_count|pluralize }}: {{comment_count }}</a>
+	</div>
+</div>
+    {% endfor %}
+
+	{% if is_paginated %}
+		<div class="category_footer">
+		{% if has_next %}
+			<div class="next" >
+				<a class="older" href="?page={{ next }}">Older</a>
+			</div>
+		{% endif %}
+		{% if has_next and has_previous %} | {% endif %}
+		{% if has_previous %}
+			<div class="prev" >
+				<a class="newer" href="?page={{ previous }}">Newer</a>
+			</div>
+		{% endif %}
+		</div>
+	{% endif %}
+
+	</div>
+
 {% endblock %}
 
 

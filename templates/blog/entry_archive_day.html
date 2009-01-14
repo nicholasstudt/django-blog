@@ -1,22 +1,62 @@
 {% extends "blog/base.html" %}
 
-{% block title %}Post archive for {{ day|date:"d F Y" }}{% endblock %}
-
-{% block body_class %}{{ block.super }} post_archive_day{% endblock %}
-
-{% block content_title %}
-  <h2>Post archive for {{ day|date:"d F Y" }}</h2>
-{% endblock %}
+{% block title %}{{ block.super }} Archive for {{ day|date:"d F Y" }}{% endblock %} 
+{% block content_title %}{{ day|date:"d F Y" }}{% endblock %}
+{% block body_class %}{{ block.super }} entry_archive_day{% endblock %}
 
 
 {% block content %}
-<div class="post_list">
-	{% for entry in object_list %}
-	<div>
-		<h3 class="title"><a href="{{ entry.get_absolute_url }}">{{ entry.headline }}</a></h3>
-		<p class="date">{{ entry.pub_date|date:"Y F d" }}</p>
-		<p class="tease">{{ entry.content }}</p>
+	{% load comments %}
+	<div class="archive" >
+		<h1><a href="{% url entry_index %}{{ day|date:"Y" }}-{{ day|date:"m" }}" >{{ day|date:"d F Y" }}</a></h1>
+
+ 
+    {% for entry in object_list %}
+		{% get_comment_count for entry as comment_count %}
+<div class="article">
+	<div class="article_header">
+		<h1 class="topic">
+			<a href="{{ entry.get_absolute_url }}">{{ entry.headline }}</a>
+		</h1>
+		<h2 class="date"> 
+			{{ entry.pub_date|date:"l, j F Y G:i T" }}
+		</h2>
+		<h3 class="author">
+			Posted by: 
+			<a href="{{ entry.author.get_absolute_url}}">{{ entry.author }}</a>
+		</h3>
+		<h4 class="category">
+			File Under: 
+	        {% for tag in entry.tags.all %}
+				<a href="{{ tag.get_absolute_url }}">{{ tag.tag }}</a>{% if not forloop.last %}, {% endif %}
+			{% endfor %}
+		</h4>
 	</div>
-	{% endfor %}
+	<div class="content" >
+		{{ entry.abstract|safe }}
+	</div>
+
+	<div class="article_comments" >
+		<a href="{{ entry.get_absolute_url }}">Comment{{ comment_count|pluralize }}: {{comment_count }}</a>
+	</div>
 </div>
+    {% endfor %}
+
+	{% if is_paginated %}
+		<div class="category_footer">
+		{% if has_next %}
+			<div class="next" >
+				<a class="older" href="?page={{ next }}">Older</a>
+			</div>
+		{% endif %}
+		{% if has_next and has_previous %} | {% endif %}
+		{% if has_previous %}
+			<div class="prev" >
+				<a class="newer" href="?page={{ previous }}">Newer</a>
+			</div>
+		{% endif %}
+		</div>
+	{% endif %}
+
+	</div>
 {% endblock %}
