@@ -1,0 +1,61 @@
+{% extends "simple_blog/base.html" %}
+
+{% block title %}{{ block.super }} Archive for {{ month|date:"F Y" }}{% endblock %}
+{% block content_title %}{{ month|date:"F Y" }}{% endblock %}
+{% block body_class %}{{ block.super }} entry_archive_month{% endblock %}
+
+{% block content %}
+	<div class="archive" >
+		<h1>{{ month|date:"F" }} <a href="{% url entry_index %}{{ month|date:"Y" }}" >{{ month|date:"Y" }}</a></h1>
+
+	{% load comments %}
+ 
+    {% for entry in object_list %}
+		{% get_comment_count for entry as comment_count %}
+<div class="article">
+	<div class="article_header">
+		<h1 class="topic">
+			<a href="{{ entry.get_absolute_url }}">{{ entry.headline }}</a>
+		</h1>
+		<h2 class="date"> 
+			{{ entry.pub_date|date:"l, j F Y G:i T" }}
+		</h2>
+		<h3 class="author">
+			Posted by: 
+			<a href="{{ entry.author.get_absolute_url}}">{{ entry.author }}</a>
+		</h3>
+		<h4 class="category">
+			File Under: 
+	        {% for tag in entry.tags.all %}
+				<a href="{{ tag.get_absolute_url }}">{{ tag.tag }}</a>{% if not forloop.last %}, {% endif %}
+			{% endfor %}
+		</h4>
+	</div>
+	<div class="content" >
+		{{ entry.abstract|safe }}
+	</div>
+
+	<div class="article_comments" >
+		<a href="{{ entry.get_absolute_url }}">Comment{{ comment_count|pluralize }}: {{comment_count }}</a>
+	</div>
+</div>
+    {% endfor %}
+
+	{% if is_paginated %}
+		<div class="category_footer">
+		{% if has_next %}
+			<div class="next" >
+				<a class="older" href="?page={{ next }}">Older</a>
+			</div>
+		{% endif %}
+		{% if has_next and has_previous %} | {% endif %}
+		{% if has_previous %}
+			<div class="prev" >
+				<a class="newer" href="?page={{ previous }}">Newer</a>
+			</div>
+		{% endif %}
+		</div>
+	{% endif %}
+
+	</div>
+{% endblock %}
