@@ -1,8 +1,8 @@
 from django.contrib import admin
 
-from blog.models import Author
-from blog.models import Entry
-from blog.models import Tag
+from simple_blog.models import Author
+from simple_blog.models import Entry
+from simple_blog.models import Tag
 
 class AuthorAdmin(admin.ModelAdmin):
     fieldsets = [
