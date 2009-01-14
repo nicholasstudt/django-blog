@@ -31,7 +31,7 @@ class Entry(models.Model):
     abstract = models.TextField(help_text=_('Entry Abstract'), blank=True);
     content = models.TextField(help_text=_('Entry Content'));
     sites = models.ManyToManyField(Site, default=(sid,))
-    tags = models.ManyToManyField('Tag')
+    tags = models.ManyToManyField('Tag', blank=True)
 
     objects = PublishedManager()
 
