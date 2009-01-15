@@ -45,7 +45,7 @@ for dirpath, dirnames, filenames in os.walk(application_dir):
 version = __import__('blog').get_version()
 
 setup(
-    name = "django-simple-blog",
+    name = "django-blog",
     version = version.replace(' ', '-'),
     author = 'Nicholas Studt',
     author_email = 'nicholas@photodwarf.org',

@@ -1,7 +1,7 @@
 from django.contrib.syndication.feeds import Feed
 from django.contrib.sites.models import Site
 from django.core.urlresolvers import reverse
-from simple_blog.models import Entry
+from blog.models import Entry
 
 class LatestEntries(Feed):
     _site = Site.objects.get_current()

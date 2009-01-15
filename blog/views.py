@@ -5,7 +5,7 @@ from django.template import loader, RequestContext
 from django.db.models import Q
 from django.views.generic import date_based, list_detail
 
-from simple_blog.models import Entry, Author, Tag
+from blog.models import Entry, Author, Tag
 
 def entry_list(request, page=0, **kwargs):
     return list_detail.object_list(
@@ -46,7 +46,7 @@ def entry_detail(request, slug, year, month, day, **kwargs):
     )
 entry_detail.__doc__ = date_based.object_detail.__doc__
 
-def entry_search(request, template_name='simple_blog/entry_search.html'):
+def entry_search(request, template_name='blog/entry_search.html'):
     response = {}
     # This should check tags, and headlines as well.
     if request.POST:

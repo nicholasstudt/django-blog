@@ -3,7 +3,7 @@ from django.conf import settings
 from django.contrib.sites.models import Site
 from django.utils.translation import ugettext_lazy as _
 
-from simple_blog.managers import PublishedManager
+from blog.managers import PublishedManager
 
 # Create your models here.
 class Entry(models.Model):
