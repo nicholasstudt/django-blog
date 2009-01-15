@@ -30,7 +30,7 @@ packages, data_files = [], []
 root_dir = os.path.dirname(__file__)
 if root_dir != '':
     os.chdir(root_dir)
-application_dir = 'simple_blog'
+application_dir = 'blog'
   
 for dirpath, dirnames, filenames in os.walk(application_dir):
     # Ignore dirnames that start with '.'
@@ -41,8 +41,8 @@ for dirpath, dirnames, filenames in os.walk(application_dir):
     elif filenames:
         data_files.append([dirpath, [os.path.join(dirpath, f) for f in filenames]])
 
-# Get the version from simple_blog.VERSION
-version = __import__('simple_blog').get_version()
+# Get the version from blog.VERSION
+version = __import__('blog').get_version()
 
 setup(
     name = "django-simple-blog",
