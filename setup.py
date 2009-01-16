@@ -53,6 +53,7 @@ setup(
     description = 'Simple Django blog.',
     packages = packages, 
     data_files = data_files,
-    requires = ('django (>=1.0.2)',),
+    scripts = ['blog/bin/blog-sqlmigrate.py'],
+#    requires = ('django (>=1.0.2)',),
 )
 
