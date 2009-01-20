@@ -22,7 +22,7 @@
   <p class="date">{{ object.pub_date|date:"j F Y" }}</p>
   
   <div class="body">
-    {{ object.content }}
+    {{ object.content|safe }}
   </div>
 
   {% get_comment_list for object as comment_list %}
