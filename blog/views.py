@@ -32,15 +32,15 @@ def tag_list(request, ident, **kwargs):
     )
 tag_list.__doc__ = list_detail.object_list.__doc__
 
-def entry_detail(request, slug, year, month, day, **kwargs):
+def entry_detail(request, year, month, day, slug, **kwargs):
     return date_based.object_detail(
         request,
+        month_format = '%m',
         year = year,
         month = month,
         day = day,
         slug = slug,
         date_field = 'pub_date',
-        month_format = '%m',
         queryset = Entry.objects.published(),
         **kwargs
     )
