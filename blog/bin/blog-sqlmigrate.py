@@ -85,7 +85,7 @@ def main():
         t.save()
    
     # Import Articles
-    c.execute("SELECT a.id, t.published, a.ident, a.a_options, a.topic, a.pub_date, a.modified, a.created, a.summary, a.content, w.ident as author_ident FROM bg_articles as a, bg_article_type as t, bg_authors as w WHERE t.id = a.bg_article_type_id AND a.bg_author_id = w.id ")
+    c.execute("SELECT a.id, t.published, a.ident, a.a_options, a.topic, a.pub_date, a.modified, a.summary, a.content, w.ident as author_ident FROM bg_articles as a, bg_article_type as t, bg_authors as w WHERE t.id = a.bg_article_type_id AND a.bg_author_id = w.id ")
 
     for row in c.fetchall():
 
