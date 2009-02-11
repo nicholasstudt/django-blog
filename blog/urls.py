@@ -10,7 +10,7 @@ urlpatterns = patterns('',
     # /article/<section>/<date "YYYY-MM-DD">/<ident> -> One article
     # /YYYY-MM-DD/slug (allow anything in as slug, for old idents) 
     # (?P<slug?>[-\w]+) What slug should be...
-    url(r'^(?P<year>\d{4})-(?P<month>\d{1,2})-(?P<day>\d{1,2})/(?P<slug>.*)/?$',
+    url(r'^(?P<year>\d{4})-(?P<month>\d{1,2})-(?P<day>\d{1,2})/(?P<slug>.*[-\w]+)/?$',
         'blog.views.entry_detail', 
         name="entry_detail"),
 
