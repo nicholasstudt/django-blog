@@ -1,4 +1,15 @@
 Revison history.
 
+Todo:
+ - Make a do not include this tag in main index flag
+	- or -
+ - The inverse so we can segregate solutions from the news.
+ - Probably should allow for both.
+ 
+ - Template Tags: one to list all tags, one to show archive.
+
+ - Fix this for python 2.3 No @s ?
+ - Comments RSS feed?
+
 1.0.0-rc3
  - 
