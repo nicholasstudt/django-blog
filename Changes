@@ -11,5 +11,7 @@ Todo:
  - Fix this for python 2.3 No @s ?
  - Comments RSS feed?
 
-1.0.0-rc3
- - 
+1.0.1-rc1
+ - Use "permalink(get_absolute_url)" rather than "@models.permalink",
+   for python 2.3
+
