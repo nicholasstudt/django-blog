@@ -11,7 +11,7 @@
 			<h2><a href="mailto:{{ object.email }}">{{ object.email }}</a></h2>
 		</div>
 		<div class="author_content" >
-			{{ object.content }}
+			{{ object.content|safe }}
 		</div>
 	</div>
 {% endblock %}

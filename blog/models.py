@@ -49,7 +49,7 @@ class Entry(models.Model):
                 'day': self.pub_date.day,
                 'slug': self.slug
         })
-    get_absolute_url = permalink(get_absolute_url)
+    get_absolute_url = models.permalink(get_absolute_url)
 
 
     def get_previous_post(self):
@@ -70,7 +70,7 @@ class Author(models.Model):
    
     def get_absolute_url(self):
         return('author_detail', (), { 'ident': self.ident })
-    get_absolute_url = permalink(get_absolute_url)
+    get_absolute_url = models.permalink(get_absolute_url)
 
 class Tag(models.Model):
     tag = models.SlugField(max_length=250)
@@ -82,5 +82,5 @@ class Tag(models.Model):
 
     def get_absolute_url(self):
         return('tag_list', (), { 'ident': self.tag })
-    get_absolute_url = permalink(get_absolute_url)
+    get_absolute_url = models.permalink(get_absolute_url)
 
