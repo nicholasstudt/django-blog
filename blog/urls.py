@@ -1,9 +1,10 @@
 from django.conf.urls.defaults import *
-from blog.feeds import LatestEntriesByTag, LatestEntries
+from blog.feeds import LatestEntriesByTag, LatestEntries, LatestComments
 
 feeds = {   
     'latest': LatestEntries,
     'tags': LatestEntriesByTag,
+    'comments': LatestComments,
 }
 
 urlpatterns = patterns('',
