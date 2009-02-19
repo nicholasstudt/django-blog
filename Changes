@@ -6,10 +6,9 @@ Todo:
  - The inverse so we can segregate solutions from the news.
  - Probably should allow for both.
  
- - Template Tags: one to list all tags, one to show archive.
-
-
 1.0.1-rc1
  - Use "permalink(get_absolute_url)" rather than "@models.permalink",
    for python 2.3
  - Enable comments feed via the comments contrib model.
+ - Template tag, "tag_list_as" to list all tags.
+ - Template tag, "entry_archive" to list entry dates

@@ -77,6 +77,9 @@ class Tag(models.Model):
     #count = models.IntegerField()
     # Do I need the count here ?
 
+    class Meta:
+        ordering = ('tag',)
+
     def __unicode__(self):
         return( u'%s' % self.tag )
 

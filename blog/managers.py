@@ -8,3 +8,4 @@ class PublishedManager(Manager):
     def published(self, **kwargs):
         return self.get_query_set().filter(status__gte=2, pub_date__lte=datetime.datetime.now(), sites__id__exact=settings.SITE_ID, **kwargs)
 
+

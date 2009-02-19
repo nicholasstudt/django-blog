@@ -34,8 +34,5 @@ class LatestEntriesByTag(Feed):
         return Entry.objects.published()[:10]
 
 class LatestComments(LatestCommentFeed):
-    _site = Site.objects.get_current()
-    title = '%s feed' % _site.name
-    description = '%s comments feed.' % _site.name
-
-
+    pass
+    # Accept all of the contrib.comments defaults.

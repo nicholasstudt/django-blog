@@ -1,94 +1,91 @@
 from django import template
 from django.template import TemplateSyntaxError
 from django.conf import settings
+from django.db import models
+
+Tag = models.get_model('blog', 'tag')
+Entry = models.get_model('blog', 'entry')
 
 register = template.Library()
 
-## FIXME: 
-# Need Latest posts
-# Need Tags
-# Need Archive
+class EntryList(template.Node):
+    def __init__(self, var_name, kind='month', limit=None):
+        self.var_name = var_name
+        self.kind = kind
+        self.limit = limit 
 
-class DynamicIncludeNode(template.Node):
-    def __init__(self, include_file):
-        self.include_file = include_file
     def render(self, context):
-        """ Open and read the file, after we work it out... """ 
-        document_root = settings.DOCUMENT_ROOT
-    
-        path = os.path.normpath(urllib.unquote(self.include_file))
-        path = path.lstrip('/')
-        include = ''
-        for part in path.split('/'):
-            if not part:
-                # Strip empty path components.
-                continue
-            drive, part = os.path.splitdrive(part)
-            head, part = os.path.split(part)
-            if part in (os.curdir, os.pardir):
-                # Strip '.' and '..' in path.
-                continue
-            include = os.path.join(include, part).replace('\\', '/')
-    
-        if include and path != include:
-            if settings.DEBUG:
-                return "[Invalid include file]"
-            else:
-                return '' # Fail Silently, Does not exist.
-        
-        if self.include_file[0] == '/':
-            # Should we even do this? Force people to use {% ssi ... %}
-            fullpath = os.path.join(document_root, include)
-            if not os.path.exists(fullpath):
-                fullpath = ''
+        list = Entry.objects.published().dates('pub_date', self.kind, 
+                                               order='DESC')
+
+        if self.limit:
+            context[self.var_name] = list[:self.limit]
         else:
-            try: 
-                request = template.resolve_variable('request', context)
-            except Exception:
-                if settings.DEBUG:
-                    return "[django.core.context_processors.request not included in TEMPLATE_CONTEXT_PROCESSORS in settings.py]"
-                else:
-                    return '' # Fail Silently, we don't have context
- 
-            test_path = request.path.lstrip('/').rstrip('/')
-            parts = test_path.split('/')
+            context[self.var_name] = list
+        return ''
 
-            # Walk the directory including till we get to root...
-            while parts and not os.access(str.join(os.sep, (document_root, test_path, include)), os.R_OK):
-                parts = parts[0:-1] # Shrink parts by 1
-                test_path = str.join(os.sep, parts)
+class TagList(template.Node):
+    def __init__(self, var_name):
+        self.var_name = var_name
 
-            fullpath = str.join(os.sep, (document_root, test_path, include, ))
+    def render(self, context):
+        context[self.var_name] = Tag.objects.all()
+        return ''
 
-        try:
-            fp = open(fullpath, 'r')
-            output = fp.read()
-            fp.close()
-        except IOError:
-            output = ''
-        
-        return output
-
-#@register.tag
-def dynamic_include(parser, token):
+def tag_list_as(parser, token):
     """
-    Loads a file and renders it with the current context. Requires the
-    DOCUMENT_ROOT variable be set to the document root for the site.
-
-    To use the second form, relative to the current url you must adjust
-    the TEMPLATE_CONTEXT_PROCESSORS in settings.py to include
-    'django.core.context_processors.request' or relative includes will
-    not work.
+    List all of the tags.
 
     Example::
 
-        {% dynamic_include /path/from/document_root %}
-        {% dynamic_include relative_to_current_url.html %}
+        {% tag_list_as [name] %}
+        
+        {% load blog %}
+
+        {% tag_list_as tags %} 
+        <ul>
+            {% for tag in tags %}
+                <li><a href="{% url tag_list tag %}">{{ tag }}</a></li>
+            {% endfor %}
+        </ul>
     """
+
     bits = token.contents.split()
-    if not settings.DOCUMENT_ROOT:
-        raise template.TemplateSyntaxError, "%r tag requires DOCUMENT_ROOT variable be defined in settings.py" % bits[0]
     if len(bits) != 2:
-        raise template.TemplateSyntaxError, "%r tag requires a single argument: the name of the file to be included" % bits[0]
-    return DynamicIncludeNode(bits[1])
-dynamic_include = register.tag(dynamic_include)
+        raise TemplateSyntaxError, "'%s' tag requires a single argument: the context name to populate" % bits[0]
+    return TagList(bits[1])
+tag_list_as = register.tag(tag_list_as)
+
+def entry_archive(parser, token):
+    """
+    List all of the tags.
+
+    Example::
+
+        {% entry_archive [name] <count|all>:<year|month|day> %}
+        
+        {% load blog %}
+
+        {% entry_archive entries all:month %} 
+        <ul>
+            {% for entry in entries %}
+                <li><a href="{% url tag_list tag %}">{{ entry.name }}</a></li>
+            {% endfor %}
+        </ul>
+
+    """
+    limit = None
+    type = 'month'
+    bits = token.contents.split()
+    if len(bits) < 2:
+        raise TemplateSyntaxError, "'%s' tag requires at least the context name to populate" % bits[0]
+    
+    if len(bits) == 3:
+        (limit, type) = bits[2].split(':') 
+        try: 
+            limit = int(limit)
+        except ValueError: 
+            limit = None
+
+    return EntryList(bits[1], type, limit)
+entry_archive = register.tag(entry_archive)
