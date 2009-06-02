@@ -3,6 +3,8 @@ from django.conf import settings
 from django.contrib.sites.models import Site
 from django.utils.translation import ugettext_lazy as _
 
+from django.contrib.comments.moderation import CommentModerator, moderator
+
 from blog.managers import PublishedManager
 
 # Create your models here.
@@ -58,6 +60,12 @@ class Entry(models.Model):
     def get_next_post(self):
         return( self.get_next_by_pub_date(status__gte=2) )
 
+
+class EntryModerator(CommentModerator):
+    email_notification = True
+    enable_field = 'comments' 
+    
+moderator.register(Entry, EntryModerator)
 
 class Author(models.Model):
     ident = models.SlugField()
