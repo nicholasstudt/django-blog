@@ -33,6 +33,8 @@ def tag_list(request, ident, **kwargs):
 tag_list.__doc__ = list_detail.object_list.__doc__
 
 def entry_detail(request, year, month, day, slug, **kwargs):
+    # If we are an authenticated user with the ability to
+    # add/edit/delete an entry then we need to use a different manager.
     return date_based.object_detail(
         request,
         month_format = '%m',
