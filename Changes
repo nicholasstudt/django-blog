@@ -4,10 +4,8 @@ Todo:
  - Move to using django-tagging to do the tags.
  - Add options entries for how long comments are open.
 
-1.0.2-
- - 
 
-1.0.1-rc1
+1.0.0:
  - Use "permalink(get_absolute_url)" rather than "@models.permalink",
    for python 2.3
  - Enable comments feed via the comments contrib model.
