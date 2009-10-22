@@ -1,6 +1,6 @@
 Revison history.
 
-1.0.0:
+1.0:
  - Use "permalink(get_absolute_url)" rather than "@models.permalink",
    for python 2.3
  - Enable comments feed via the comments contrib model.
