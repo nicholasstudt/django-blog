@@ -1,9 +1,14 @@
 Revison history.
 
+1.1:
+ - Preview works.
+ - Comment moderation added. 
+   BLOG_CLOSE_AFTER and BLOG_MODERATE_AFTER allow comments to close
+   or be modearated after int() days past the pub_date. 
+
 1.0:
  - Use "permalink(get_absolute_url)" rather than "@models.permalink",
    for python 2.3
  - Enable comments feed via the comments contrib model.
  - Template tag, "tag_list_as" to list all tags.
  - Template tag, "entry_archive" to list entry dates
- - Preview works.
