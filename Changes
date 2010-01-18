@@ -4,7 +4,7 @@ Revison history.
  - Preview works.
  - Comment moderation added. 
    BLOG_CLOSE_AFTER and BLOG_MODERATE_AFTER allow comments to close
-   or be modearated after int() days past the pub_date. 
+   or be moderated after int() days past the pub_date. 
 
 1.0:
  - Use "permalink(get_absolute_url)" rather than "@models.permalink",
