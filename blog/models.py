@@ -9,7 +9,7 @@ from django.contrib.comments.moderation import CommentModerator, moderator
 import datetime
 
 DRAFT = 1
-PUBLISHED = 1
+PUBLISHED = 2
 
 class EntryPublishedManager(Manager):
     """Returns published posts that are not in the future.""" 
@@ -57,8 +57,17 @@ class Entry(models.Model):
     def is_published(self):
         return(self.status == PUBLISHED)
 
+    def can_comment(self):
+        try: 
+            if (datetime.datetime.now() - self.pub_date) >= int(settings.BLOG_CLOSE_AFTER):
+                return True
+        except (AttributeError, ValueError):
+            pass
+
+        return(self.comments)
+
     def get_absolute_url(self):
-        return ('entry_detail', (), {
+        return('entry_detail', (), {
                 'year': self.pub_date.year,
                 'month': self.pub_date.strftime('%m'),
                 'day': self.pub_date.day,
@@ -67,16 +76,36 @@ class Entry(models.Model):
     get_absolute_url = models.permalink(get_absolute_url)
 
     def get_previous_post(self):
-        return( self.get_previous_by_pub_date(status__gte=PUBLISHED) )
+        return(self.get_previous_by_pub_date(status__gte=PUBLISHED))
                 
     def get_next_post(self):
-        return( self.get_next_by_pub_date(status__gte=PUBLISHED) )
+        return(self.get_next_by_pub_date(status__gte=PUBLISHED))
 
 
 class EntryModerator(CommentModerator):
     email_notification = True
     enable_field = 'comments' 
-    
+
+    try: 
+        if settings.BLOG_CLOSE_AFTER:
+            try: 
+                auto_close_field = 'pub_date'    
+                close_after = settings.BLOG_CLOSE_AFTER
+            except ValueError:
+                pass
+    except AttributeError:
+        pass
+
+    try: 
+        if settings.BLOG_MODERATE_AFTER:
+            try: 
+                auto_moderate_field = 'pub_date'    
+                moderate_after = settings.BLOG_MODERATE_AFTER
+            except ValueError:
+                pass
+    except AttributeError:
+        pass
+
 moderator.register(Entry, EntryModerator)
 
 class Author(models.Model):
@@ -86,7 +115,7 @@ class Author(models.Model):
     content = models.TextField()
 
     def __unicode__(self):
-        return( u'%s' % self.name )
+        return(u'%s' % self.name)
    
     def get_absolute_url(self):
         return('author_detail', (), { 'ident': self.ident })

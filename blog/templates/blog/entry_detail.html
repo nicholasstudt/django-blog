@@ -60,7 +60,7 @@ says...
     {% endfor %}
   </div>
   {% endif %}
-  {% if object.comments %}
+  {% if object.can_comment %}
     {% render_comment_form for object %}
   {% else %}
     <div id="comment_form">
