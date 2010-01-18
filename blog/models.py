@@ -2,17 +2,27 @@ from django.db import models
 from django.conf import settings
 from django.contrib.sites.models import Site
 from django.utils.translation import ugettext_lazy as _
+from django.db.models import Manager
 
 from django.contrib.comments.moderation import CommentModerator, moderator
 
-from blog.managers import PublishedManager
+import datetime
+
+DRAFT = 1
+PUBLISHED = 1
+
+class EntryPublishedManager(Manager):
+    """Returns published posts that are not in the future.""" 
+    
+    def published(self, **kwargs):
+        return self.get_query_set().filter(status__gte=PUBLISHED, pub_date__lte=datetime.datetime.now(), sites__id__exact=settings.SITE_ID, **kwargs)
 
 # Create your models here.
 class Entry(models.Model):
     """Entry Model."""
     STATUS_CHOICES = (
-        (1, _('Draft')),
-        (2, _('Publish')),
+        (DRAFT, _('Draft')),
+        (PUBLISHED, _('Publish')),
     )
 
     try: 
@@ -23,7 +33,7 @@ class Entry(models.Model):
 
     pub_date = models.DateTimeField(_('date published'))
     slug = models.SlugField(_('slug'),unique_for_date='pub_date')
-    status = models.IntegerField(_('status'), choices=STATUS_CHOICES, default=2)
+    status = models.IntegerField(_('status'), choices=STATUS_CHOICES, default=PUBLISHED)
     comments = models.BooleanField(_('allow comments'), default=True)
 
     modified = models.DateTimeField(_('last modified'), editable=False, auto_now=True)
@@ -35,7 +45,7 @@ class Entry(models.Model):
     sites = models.ManyToManyField(Site, default=(sid,))
     tags = models.ManyToManyField('Tag', blank=True)
 
-    objects = PublishedManager()
+    objects = EntryPublishedManager()
 
     class Meta:
         verbose_name_plural = _('entries')
@@ -43,6 +53,9 @@ class Entry(models.Model):
 
     def __unicode__(self):
         return( u'%s' % self.headline )
+
+    def is_published(self):
+        return(self.status == PUBLISHED)
 
     def get_absolute_url(self):
         return ('entry_detail', (), {
@@ -53,12 +66,11 @@ class Entry(models.Model):
         })
     get_absolute_url = models.permalink(get_absolute_url)
 
-
     def get_previous_post(self):
-        return( self.get_previous_by_pub_date(status__gte=2) )
+        return( self.get_previous_by_pub_date(status__gte=PUBLISHED) )
                 
     def get_next_post(self):
-        return( self.get_next_by_pub_date(status__gte=2) )
+        return( self.get_next_by_pub_date(status__gte=PUBLISHED) )
 
 
 class EntryModerator(CommentModerator):

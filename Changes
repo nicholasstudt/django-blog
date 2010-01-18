@@ -6,3 +6,4 @@ Revison history.
  - Enable comments feed via the comments contrib model.
  - Template tag, "tag_list_as" to list all tags.
  - Template tag, "entry_archive" to list entry dates
+ - Preview works.

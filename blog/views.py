@@ -33,6 +33,12 @@ def tag_list(request, ident, **kwargs):
 tag_list.__doc__ = list_detail.object_list.__doc__
 
 def entry_detail(request, year, month, day, slug, **kwargs):
+    
+    if request.user.is_staff: # Restrict preview to staff
+        queryset = Entry.objects.all()
+    else:
+        queryset = Entry.objects.published()
+
     # If we are an authenticated user with the ability to
     # add/edit/delete an entry then we need to use a different manager.
     return date_based.object_detail(
@@ -43,7 +49,7 @@ def entry_detail(request, year, month, day, slug, **kwargs):
         day = day,
         slug = slug,
         date_field = 'pub_date',
-        queryset = Entry.objects.published(),
+        queryset = queryset,
         **kwargs
     )
 entry_detail.__doc__ = date_based.object_detail.__doc__

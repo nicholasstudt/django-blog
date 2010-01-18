@@ -17,9 +17,9 @@
 
 {% block content %}
 	{% load comments %}
-	<div class="article" >
+	<div class="article{% if not object.is_published %} draft{% endif %}" >
 		<div class="article_header" >
-			<h1 class="topic">{{ object.headline|safe }}</h1>
+			<h1 class="topic">{% if not object.is_published %}Draft: {% endif %}{{ object.headline|safe }}</h1>
 			<h2 class="date">{{ object.pub_date|date:"l, j F Y G:i T" }}</h2>
 			<h3 class="author">Posted by: 
 				<a href="{{ object.author.get_absolute_url}}">{{ object.author }}</a>
