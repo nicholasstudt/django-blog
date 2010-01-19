@@ -83,24 +83,32 @@ class Entry(models.Model):
 
 
 class EntryModerator(CommentModerator):
-    email_notification = True
     enable_field = 'comments' 
-
+    
     try: 
-        if settings.BLOG_CLOSE_AFTER:
+        if settings.BLOG_COMMENTS_EMAIL_NOTIFICATION:
             try: 
-                auto_close_field = 'pub_date'    
-                close_after = settings.BLOG_CLOSE_AFTER
+                email_notification = settings.BLOG_COMMENTS_EMAIL_NOTIFICATION
             except ValueError:
                 pass
     except AttributeError:
         pass
 
     try: 
-        if settings.BLOG_MODERATE_AFTER:
+        if settings.BLOG_COMMENTS_CLOSE_AFTER:
+            try: 
+                auto_close_field = 'pub_date'    
+                close_after = settings.BLOG_COMMENTS_CLOSE_AFTER
+            except ValueError:
+                pass
+    except AttributeError:
+        pass
+
+    try: 
+        if settings.BLOG_COMMENTS_MODERATE_AFTER:
             try: 
                 auto_moderate_field = 'pub_date'    
-                moderate_after = settings.BLOG_MODERATE_AFTER
+                moderate_after = settings.BLOG_COMMENTS_MODERATE_AFTER
             except ValueError:
                 pass
     except AttributeError:

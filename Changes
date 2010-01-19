@@ -2,9 +2,11 @@ Revison history.
 
 1.1:
  - Preview works.
- - Comment moderation added. 
-   BLOG_CLOSE_AFTER and BLOG_MODERATE_AFTER allow comments to close
-   or be moderated after int() days past the pub_date. 
+ - Comment moderation added, controlled by the following variables in a
+   sites settings.py:
+   BLOG_COMMENTS_CLOSE_AFTER = <# days after which comments are closed>
+   BLOG_COMMENTS_MODERATE_AFTER = <# days after which comments are moderated>
+   BLOG_COMMENTS_EMAIL_NOTIFICATION = True/False
 
 1.0:
  - Use "permalink(get_absolute_url)" rather than "@models.permalink",
