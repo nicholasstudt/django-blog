@@ -59,7 +59,7 @@ class Entry(models.Model):
 
     def can_comment(self):
         try: 
-            if (datetime.datetime.now() - self.pub_date).days >= int(settings.BLOG_CLOSE_AFTER):
+            if (datetime.datetime.now() - self.pub_date).days >= int(settings.BLOG_COMMENTS_CLOSE_AFTER):
                 return False
         except (AttributeError, ValueError):
             pass
