@@ -25,11 +25,14 @@
 				<a href="{{ object.author.get_absolute_url}}">{{ object.author }}</a>
 			</h3>
 			<h4 class="category">
-				File Under: 
 				{% for tag in object.tags.all %}
-					<a href="{{ tag.get_absolute_url }}">{{ tag.tag }}</a>{% if not forloop.last %}, {% endif %}
+					<a href="{{ tag.get_absolute_url }}">#{{ tag.tag }}</a>
 				{% endfor %}
 			</h4>
+			{% if perms.blog.change_entry %}
+				<a href="{% url admin:blog_entry_change object.id %}">Edit</a>
+			{% endif %} 
+
 		</div>
 		<div class="content" >
 			{{ object.content|safe }} 

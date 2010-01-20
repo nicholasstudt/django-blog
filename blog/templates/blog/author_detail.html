@@ -9,6 +9,10 @@
 		<div class="author_header" >
 			<h1>{{ object.name }}</h1>
 			<h2><a href="mailto:{{ object.email }}">{{ object.email }}</a></h2>
+
+			{% if perms.blog.change_author %}
+				<a href="{% url admin:blog_author_change object.id %}">Edit</a>
+			{% endif %}
 		</div>
 		<div class="author_content" >
 			{{ object.content|safe }}

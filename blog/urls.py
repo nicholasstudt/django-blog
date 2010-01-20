@@ -43,15 +43,11 @@ urlpatterns = patterns('',
         name="entry_search"),
 
     # /feeds/tags, /feeds/latest,
-    url(r'^feed/?$', 'django.contrib.syndication.views.feed',
-            {'feed_dict': LatestEntries}),
-
     url(r'^feeds/(?P<url>.*)/?$', 'django.contrib.syndication.views.feed',
             {'feed_dict': feeds}),
 
     url(r'^comments/', include('django.contrib.comments.urls')),
 
-    url(r'^$', 
-        'blog.views.entry_list',
-        name="entry_index"),
+    url(r'^$', 'blog.views.entry_list', name="entry_index"),
+
 )

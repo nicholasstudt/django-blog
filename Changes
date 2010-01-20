@@ -7,6 +7,13 @@ Revison history.
    BLOG_COMMENTS_CLOSE_AFTER = <# days after which comments are closed>
    BLOG_COMMENTS_MODERATE_AFTER = <# days after which comments are moderated>
    BLOG_COMMENTS_EMAIL_NOTIFICATION = True/False
+ - You must use the new admin include or the default templates will not
+   work: ('^admin/', include(admin.site.urls)),
+ - Entry and author pages now show edit links that allow direct editing
+   of the element via the admin interface.
+ - Draft entries show the word 'Draft' in their headline during the
+   preview.
+ 
 
 1.0:
  - Use "permalink(get_absolute_url)" rather than "@models.permalink",
