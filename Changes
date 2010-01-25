@@ -1,10 +1,6 @@
 Revison history.
 
- - Add a way to specify pagenation amount for each page.
- - Make the default templates cleaner.
- - Work out namespaces
-
-1.1:
+1.1 (January 24, 2010):
  - Preview works.
  - Comment moderation added, controlled by the following variables in a
    sites settings.py:
@@ -17,6 +13,8 @@ Revison history.
    of the element via the admin interface.
  - Draft entries show the word 'Draft' in their headline during the
    preview.
+ - BLOG_PAGINATE_ENTRY_LIST controls the number of pages show in the
+   entry_list page, default is 10.
  
 
 1.0:

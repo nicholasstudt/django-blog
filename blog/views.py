@@ -1,5 +1,6 @@
 # Create your views here.
 from django import http
+from django.conf import settings
 from django.shortcuts import render_to_response
 from django.template import loader, RequestContext
 from django.db.models import Q
@@ -8,10 +9,16 @@ from django.views.generic import date_based, list_detail
 from blog.models import Entry, Author, Tag
 
 def entry_list(request, page=0, **kwargs):
+
+    try:
+        paginate_by = settings.BLOG_PAGINATE_ENTRY_LIST
+    except AttributeError:
+        paginate_by = 10
+
     return list_detail.object_list(
         request,
         page = page,
-        paginate_by = 10,
+        paginate_by = paginate_by,
         queryset = Entry.objects.published(),
         **kwargs
     )
