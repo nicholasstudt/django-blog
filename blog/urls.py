@@ -7,7 +7,7 @@ feeds = {
     'comments': LatestComments,
 }
 
-blogpatterns = patterns('',
+urlpatterns = patterns('',
     # /article/<section>/<date "YYYY-MM-DD">/<ident> -> One article
     # /YYYY-MM-DD/slug (allow anything in as slug, for old idents) 
     # (?P<slug?>[-\w]+) What slug should be...
@@ -51,6 +51,3 @@ blogpatterns = patterns('',
     url(r'^$', 'blog.views.entry_list', name="entry_index"),
 )
 
-urlpatterns = patterns('',
-    url(r'^', include(blogpatterns, app_name='blog', namespace='blog'))
-)
