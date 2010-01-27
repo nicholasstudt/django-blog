@@ -120,3 +120,17 @@ def author_detail(request, ident, **kwargs):
             queryset = Author.objects.all(),
             **kwargs )
 author_detail.__doc__ = list_detail.object_detail.__doc__
+
+def author_list(request, **kwargs):
+
+    try:
+        paginate_by = settings.BLOG_PAGINATE_AUTHOR_LIST
+    except AttributeError:
+        paginate_by = 10
+
+    return list_detail.object_list(
+            request,
+            page = page,
+            paginate_by = paginate_by,
+            queryset = Author.objects.all(),
+            **kwargs )

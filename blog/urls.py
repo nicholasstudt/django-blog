@@ -37,6 +37,10 @@ urlpatterns = patterns('',
         'blog.views.author_detail', 
         name="author_detail"),
 
+    url(r'^author/?$', 
+        'blog.views.author_list', 
+        name="author_list"),
+
     # /search
     url(r'^search/?$', 
         'blog.views.entry_search',

@@ -1,5 +1,9 @@
 Revison history.
 
+1.2
+ - BLOG_PAGINATE_AUTHOR_LIST controls the number of pages show in the
+   author_list page, default is 10.
+
 1.1 (January 24, 2010):
  - Preview works.
  - Comment moderation added, controlled by the following variables in a
@@ -15,7 +19,6 @@ Revison history.
    preview.
  - BLOG_PAGINATE_ENTRY_LIST controls the number of pages show in the
    entry_list page, default is 10.
- 
 
 1.0:
  - Use "permalink(get_absolute_url)" rather than "@models.permalink",
