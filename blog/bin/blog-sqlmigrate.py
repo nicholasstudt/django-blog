@@ -128,6 +128,7 @@ def main():
                         user_name=trow['name'],
                         user_email=trow['email'], 
                         user_url=trow['url'],
+                        submit_date=trow['created'] ,
                         comment=trow['content'],
                         content_type=ContentType.objects.get(name='entry'),
                         object_pk=e.id,
