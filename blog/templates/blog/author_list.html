@@ -20,7 +20,36 @@
 		<div class="author_content" >
 			{{ author.content|safe }}
 		</div>
+		
+		<div>
+			<strong>Recent articles by {{ author.name }}:</strong>
+			<ul>
+			{% for article in author.entry_set.published|slice:":10"  %}
+				<li><a href="{{ article.get_absolute_url }}">{{ article.headline }}</a></li>
+			{% endfor %}
+			</ul>
+			<a href="{% url author_index author.ident %}">More</a>
+		</div>
+
 	</div>
 
 	{% endfor %} 
+
+	{% if is_paginated %}
+		<div class="category_footer">
+		{% if has_next %}
+			<div class="next" >
+				<a class="older" href="?page={{ next }}">Next</a>
+			</div>
+		{% endif %}
+		{% if has_next and has_previous %} | {% endif %}
+		{% if has_previous %}
+			<div class="prev" >
+				<a class="newer" href="?page={{ previous }}">Previous</a>
+			</div>
+		{% endif %}
+		</div>
+	{% endif %}
+
+
 {% endblock %}

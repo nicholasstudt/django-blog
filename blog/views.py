@@ -1,25 +1,31 @@
 # Create your views here.
 from django import http
 from django.conf import settings
-from django.shortcuts import render_to_response
+from django.shortcuts import render_to_response, get_object_or_404
 from django.template import loader, RequestContext
 from django.db.models import Q
 from django.views.generic import date_based, list_detail
 
 from blog.models import Entry, Author, Tag
 
-def entry_list(request, page=0, **kwargs):
+def entry_list(request, author=None, page=0, **kwargs):
 
     try:
         paginate_by = settings.BLOG_PAGINATE_ENTRY_LIST
     except AttributeError:
         paginate_by = 10
 
+    if author:
+        object = get_object_or_404(Author, ident=author)
+        queryset = Entry.objects.published(author=object)
+    else: 
+        queryset = Entry.objects.published()
+
     return list_detail.object_list(
         request,
         page = page,
         paginate_by = paginate_by,
-        queryset = Entry.objects.published(),
+        queryset = queryset,
         **kwargs
     )
 entry_list.__doc__ = list_detail.object_list.__doc__
@@ -121,7 +127,7 @@ def author_detail(request, ident, **kwargs):
             **kwargs )
 author_detail.__doc__ = list_detail.object_detail.__doc__
 
-def author_list(request, **kwargs):
+def author_list(request, page=0, **kwargs):
 
     try:
         paginate_by = settings.BLOG_PAGINATE_AUTHOR_LIST

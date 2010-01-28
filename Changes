@@ -1,8 +1,13 @@
 Revison history.
 
 1.2
+ - Added author list page, which shows all authors.
  - BLOG_PAGINATE_AUTHOR_LIST controls the number of pages show in the
    author_list page, default is 10.
+ - Added author_index page which is an alias to the entry_index page
+   that is limited by author. 
+ - entry_archive template tag now takes an optional author_ident to
+   limit the listing to one author. 
 
 1.1 (January 24, 2010):
  - Preview works.

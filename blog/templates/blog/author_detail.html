@@ -18,6 +18,13 @@
 		<div class="author_content" >
 			{{ object.content|safe }}
 		</div>
+		<div>
+			<strong>Recent articles by {{ object.name }}:</strong>
+			<ul>
+			{% for article in object.entry_set.published|slice:":10"  %}
+				<li><a href="{{ article.get_absolute_url }}">{{ article.headline }}</a></li>
+			{% endfor %}
+			</ul>
+		</div>
 	</div>
-
 {% endblock %}

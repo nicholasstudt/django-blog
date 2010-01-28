@@ -122,6 +122,9 @@ class Author(models.Model):
     email = models.EmailField()
     content = models.TextField()
 
+    class Meta:
+        ordering = ('name',)
+
     def __unicode__(self):
         return(u'%s' % self.name)
    
