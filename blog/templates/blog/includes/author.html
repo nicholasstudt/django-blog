@@ -1,0 +1,23 @@
+<div class="author" >
+	<div class="author_header" >
+		<h1>{{ author.name }}</h1>
+		<h2><a href="mailto:{{ author.email }}">{{ author.email }}</a></h2>
+
+		{% if perms.blog.change_author %}
+			<a href="{% url admin:blog_author_change author.id %}">Edit</a>
+		{% endif %}
+	</div>
+	<div class="author_content" >
+		{{ author.content|safe }}
+	</div>
+	
+	<div>
+		<strong>Recent articles by {{ author.name }}:</strong>
+		<ul>
+		{% for article in author.entry_set.published|slice:":10"  %}
+			<li><a href="{{ article.get_absolute_url }}">{{ article.headline }}</a></li>
+		{% endfor %}
+		</ul>
+		<a href="{% url author_index author.ident %}">More</a>
+	</div>
+</div>

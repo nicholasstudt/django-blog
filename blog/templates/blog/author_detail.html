@@ -6,25 +6,8 @@
 
 {% block content %}
 
-	<div class="author" >
-		<div class="author_header" >
-			<h1>{{ object.name }}</h1>
-			<h2><a href="mailto:{{ object.email }}">{{ object.email }}</a></h2>
+	{% with object as author %}
+		{% include "blog/includes/author.html" %}
+	{% endwith %}
 
-			{% if perms.blog.change_author %}
-				<a href="{% url admin:blog_author_change object.id %}">Edit</a>
-			{% endif %}
-		</div>
-		<div class="author_content" >
-			{{ object.content|safe }}
-		</div>
-		<div>
-			<strong>Recent articles by {{ object.name }}:</strong>
-			<ul>
-			{% for article in object.entry_set.published|slice:":10"  %}
-				<li><a href="{{ article.get_absolute_url }}">{{ article.headline }}</a></li>
-			{% endfor %}
-			</ul>
-		</div>
-	</div>
 {% endblock %}
