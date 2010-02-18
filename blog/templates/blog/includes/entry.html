@@ -1,40 +1,43 @@
 {% load comments %}
 {% get_comment_list for object as comment_list %}
 
+<div class="article{% if not object.is_published %} draft{% endif %}" >
 
-	<div class="article{% if not object.is_published %} draft{% endif %}" >
-		<div class="article_header" >
-			<h1 class="topic">{% if not object.is_published %}Draft: {% endif %}{{ object.headline|safe }}</h1>
-			<h2 class="date">{{ object.pub_date|date:"l, j F Y G:i T" }}</h2>
-			<h3 class="author">Posted by: 
-				<a href="{{ object.author.get_absolute_url}}">{{ object.author }}</a>
-			</h3>
-			<h4 class="category">
-				{% for tag in object.tags.all %}
-					<a href="{{ tag.get_absolute_url }}">#{{ tag.tag }}</a>
-				{% endfor %}
-			</h4>
-			{% if perms.blog.change_entry %}
-				<a href="{% url admin:blog_entry_change object.id %}">Edit</a>
-			{% endif %} 
+  <h2 class="topic">{% if not object.is_published %}Draft: {% endif %}{{ object.headline|safe }}
+    {% if perms.blog.change_entry %}<a href="{% url admin:blog_entry_change object.id %}">Edit</a>{% endif %} 
+  </h2>
 
-		</div>
-		<div class="content" >
-			{{ object.content|safe }} 
-		</div>
-		<div class="article_footer" >
-			Last modified: {{ object.modified|date:"l, j F Y G:i T" }}
-		</div>
-		<div class="article_comments" >
+  <div class="content" >
+    <div class="date">{{ object.pub_date|date:"l, j F Y G:i T" }}</div>
+  
+    {{ object.content|safe }} 
 
-  {% if comment_list %}
-  <div id="comments">
-    <a name="comments"></a>
-    <h3 class="comments_title">Comments</h3>
-    {% for comment in comment_list %}
-      {% if comment.is_public %}
-      <div class="comment">
-        <h5 class="name">
+    <div class="byline">
+    Posted by <a href="{{ object.author.get_absolute_url}}">{{object.author}}</a>
+    {% ifnotequal object.modified object.pub_date %}
+      Updated on {{ object.modified|date:"l, j F Y G:i T" }}
+    {% endifnotequal %}
+    </div>
+
+    {% if object.tags %}
+    <div class="tags">
+	    Tags: 
+	    {% for tag in object.tags.all %}
+	      <a href="{{ tag.get_absolute_url }}">{{ tag.tag }}</a>{% if not forloop.last %},{% endif %} 
+	    {% endfor %}
+    </div>
+    {% endif %}
+  </div>
+
+  <div class="article_comments" >
+    {% if comment_list %}
+    <div id="comments">
+      <a name="comments"></a>
+      <h3 class="comments_title">Comments</h3>
+      {% for comment in comment_list %}
+        {% if comment.is_public %}
+        <div class="comment">
+          <h5 class="name">
           <a name="c{{ comment.id }}" href="{{ comment.get_absolute_url }}" title="Permalink to {{ comment.person_name }}'s comment"
 class="count">{{ forloop.counter }}</a> 
           {% if comment.user_url %}<a href="{{ comment.user_url }}">{{ comment.user_name }}</a>{% else %}{{ comment.user_name }}{% endif %}
@@ -47,6 +50,7 @@ says...
     {% endfor %}
   </div>
   {% endif %}
+
   {% if object.can_comment %}
     {% render_comment_form for object %}
   {% else %}
@@ -56,6 +60,10 @@ says...
     </div>
   {% endif %}
 
-		</div>
-	</div>
+  </div> <!-- article_comments -->
+
+
+</div>
+
+<!-- Next post / prev post -->
 

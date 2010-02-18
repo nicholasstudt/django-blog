@@ -1,0 +1,13 @@
+<div class="blog_paginate">
+  {% if has_previous %}
+	<div class="blog_paginate_newer">
+		<a href="?page={{ previous }}">Previous</a>
+	</div>
+  {% endif %}
+
+  {% if has_next %}
+	<div class="blog_paginate_older">
+		<a href="?page={{ next }}">Next</a>
+	</div>
+  {% endif %}
+</div>
