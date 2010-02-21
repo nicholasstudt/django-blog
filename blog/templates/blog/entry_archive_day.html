@@ -1,21 +1,20 @@
 {% extends "blog/base.html" %}
 
-{% block title %}{{ block.super }} Archive for {{ day|date:"d F Y" }}{% endblock %} 
-{% block content_title %}{{ day|date:"d F Y" }}{% endblock %}
+{% block title %}{{ block.super }} Archive for {{ day|date:"F j, Y" }}{% endblock %} 
 
 {% block content %}
-	{% load comments %}
-	<div class="archive" >
-		<h1><a href="{% url archive_month day|date:"Y" day|date:"m" %}">{{ day|date:"d F Y" }}</a></h1>
+  {% load comments %}
+
+  <div class="blog_archive">
+    <h1><a href="{% url archive_month day|date:"Y" day|date:"m" %}">{{ day|date:"F j, Y" }}</a></h1>
  
     {% for entry in object_list %}
-		{% get_comment_count for entry as comment_count %}
-		{% include "blog/includes/entry_summary.html" %}
+	  {% get_comment_count for entry as comment_count %}
+	  {% include "blog/includes/entry_summary.html" %}
     {% endfor %}
 
-	{% if is_paginated %}
-		{% include "blog/includes/entry_paginate.html" %}
-	{% endif %}
-
-	</div>
+    {% if is_paginated %}
+      {% include "blog/includes/entry_paginate.html" %}
+    {% endif %}
+  </div>
 {% endblock %}

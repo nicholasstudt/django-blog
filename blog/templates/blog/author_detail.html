@@ -1,13 +1,11 @@
 {% extends "blog/base.html" %}
 
-{% block title %}{{ block.super }} Author Detail{% endblock %}
-{% block body_class %}{{ block.super }} author_detail{% endblock %}
-{% block content_title %}Author Detail{% endblock %}
+{% block title %}{{ block.super }} {{ object.name }}{% endblock %}
 
 {% block content %}
 
-	{% with object as author %}
-		{% include "blog/includes/author.html" %}
-	{% endwith %}
+  {% with object as author %}
+    {% include "blog/includes/author.html" %}
+  {% endwith %}
 
 {% endblock %}

@@ -1,18 +1,16 @@
 {% extends "blog/base.html" %}
 
 {% block title %}{{ block.super }} Listing{% endblock %}
-{% block content_title %}Entry listing{% endblock %}
 
 {% block content %}
-	{% load comments %}
- 
-    {% for entry in object_list %}
-		{% get_comment_count for entry as comment_count %}
-		{% include "blog/includes/entry_full.html" %}
-    {% endfor %}
+  {% load comments %}
 
-	{% if is_paginated %}
-		{% include "blog/includes/entry_paginate.html" %}
-	{% endif %}
+  {% for entry in object_list %}
+    {% get_comment_count for entry as comment_count %}
+    {% include "blog/includes/entry_full.html" %}
+  {% endfor %}
 
+  {% if is_paginated %}
+    {% include "blog/includes/entry_paginate.html" %}
+  {% endif %}
 {% endblock %}

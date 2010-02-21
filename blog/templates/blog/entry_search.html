@@ -11,24 +11,26 @@
 {% endblock %}
 
 {% block content %}
-	{% load comments %}
+  {% load comments %}
  
   {% if object_list %}
-
-  <div class="post_list">
-
+  <div class="blog_search_results">
     {% for entry in object_list %}
-		{% get_comment_count for entry as comment_count %}
-		{% include "blog/includes/entry_summary.html" %}
+      {% get_comment_count for entry as comment_count %}
+      {% include "blog/includes/entry_summary.html" %}
     {% endfor %}
-
   </div>
   {% endif %}
 
-  <form action="." method="post" id="post_search_form">
+  <div class="blog_search_form">
+    <form action="{% url entry_search %}" method="post" id="post_search_form">
     <p>
+      <label for="search">Search</label>
       <input type="text" name="q" value="{{ search_term }}" id="search">
-      <input type="submit" class="button" value="Search">
     </p>
-  </form>
+    <p class="submit">
+	  <input type="submit" class="button" value="Search">
+    </p>
+    </form>
+  </div>
 {% endblock %}
