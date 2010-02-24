@@ -1,29 +1,32 @@
-<div class="article">
-	<div class="article_header">
-		<h1 class="topic">
-			<a href="{{ entry.get_absolute_url }}">{{ entry.headline }}</a>
-		</h1>
-		<h2 class="date"> 
-			{{ entry.pub_date|date:"l, j F Y G:i T" }}
-		</h2>
-		<h3 class="author">
-			Posted by: 
-			<a href="{{ entry.author.get_absolute_url}}">{{ entry.author }}</a>
-		</h3>
-		<h4 class="category">
-			File Under: 
-	        {% for tag in entry.tags.all %}
-				<a href="{{ tag.get_absolute_url }}">{{ tag.tag }}</a>{% if not forloop.last %}, {% endif %}
-			{% endfor %}
-		</h4>
-	</div>
+<div class="blog_entry{% if not entry.is_published %} draft{% endif %}">
 
-	<div class="content" >
-		{{ entry.abstract|safe }}
-	</div>
+  <h2 class="topic">{{ entry.headline|safe }} {% if perms.blog.change_entry %}<span class="edit"><a href="{% url admin:blog_entry_change entry.id %}">Edit</a></span>{% endif %} 
+  </h2>
 
-	<div class="article_comments" >
-		<a href="{{ entry.get_absolute_url }}">Comment{{ comment_count|pluralize }}: {{comment_count }}</a>
-	</div>
+  <div class="content" >
+    <div class="date">{{ entry.pub_date|date:"l, j F Y G:i T" }}</div>
+  
+    {{ entry.abstract|safe }} 
+
+    <div class="byline">
+    Posted by <a href="{{ entry.author.get_absolute_url}}">{{entry.author}}</a>
+    {% ifnotequal entry.modified entry.pub_date %}
+      Updated on {{ entry.modified|date:"l, j F Y G:i T" }}
+    {% endifnotequal %}
+    </div>
+
+    {% if entry.tags %}
+    <div class="tags">
+	    Tags: 
+	    {% for tag in entry.tags.all %}
+	      <a href="{{ tag.get_absolute_url }}">{{ tag.tag }}</a>{% if not forloop.last %},{% endif %} 
+	    {% endfor %}
+    </div>
+    {% endif %}
+  </div>
+
+  <div class="comment_summary">
+    <a href="{{ entry.get_absolute_url }}">Comment{{ comment_count|pluralize }}: {{comment_count }}</a>
+  </div>
+
 </div>
-

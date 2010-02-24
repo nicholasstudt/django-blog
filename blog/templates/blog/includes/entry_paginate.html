@@ -6,7 +6,7 @@
   {% endif %}
 
   {% if has_next and has_previous %} 
-	<div class="blog_paginate_home"><a href="?page={{ next }}">Home</a></div>
+	<div class="blog_paginate_home"><a href="{% url entry_index %}">Home</a></div>
   {% endif %}
 
   {% if has_next %}

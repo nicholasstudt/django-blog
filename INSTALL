@@ -1,4 +1,85 @@
 To install run this command from the command prompt: 
 
 	python setup.py install
+
+* Add the application and configure the blog for your Django site.
+  
+  1. Add 'blog' to your INSTALLED_APPS
+
+  2. Add the blog url to your site's urls.py:
+     (r'^', include('blog.urls')),
+
+  3. Run 'syncdb' on your Django site.
+
+  4. Customize templates as needed and set up the CSS for your new blog:
+  
+	 The style below is a CSS skeleton of the application, it should
+	 point you in the right direction. When in doubt, view source.
 	 
+     <style type="text/css">
+       /* entry_archive_day.html, entry_archive_month.html,
+        * entry_archive_year.html */ 
+       div.blog_archive { }
+       div.blog_archive h1 { }
+     
+       /* entry_search.html */
+       div.blog_search_results { }
+       div.blog_search_form { }
+       div.blog_search_form p { }
+       div.blog_search_form p.submit { }
+     
+       /* includes/author.html */
+       div.blog_author { }
+       div.blog_author h2 { }
+       div.blog_author div.content { }
+       div.blog_author div.content div.email { }
+       div.blog_author div.content div.recent { }
+       div.blog_author div.content div.recent h3 { }
+       div.blog_author div.content div.recent ul { }
+       div.blog_author div.content div.recent ul li { }
+     
+       /* includes/author_paginate.html, includes/entry_paginate.html */
+       div.blog_paginate { }
+       div.blog_paginate div.blog_paginate_newer { }
+       div.blog_paginate div.blog_paginate_home { }
+       div.blog_paginate div.blog_paginate_older { }
+     
+       /* includes/entry.html */
+       /* includes/entry_full.html */
+       /* includes/entry_summary.html */
+       div.blog_entry { }
+       div.blog_entry.draft { } 
+     
+       div.blog_entry h2.topic { }
+       div.blog_entry h2.topic span.edit { }
+     
+       div.blog_entry div.content { }
+       div.blog_entry div.content div.date { }
+       div.blog_entry div.content div.byline { }
+       div.blog_entry div.content div.tags { } 
+     
+       /* includes/entry.html */
+       div.blog_entry div.blog_paginate { }
+       div.blog_entry div.blog_paginate div.blog_paginate_newer { }
+       div.blog_entry div.blog_paginate div.blog_paginate_home { }
+       div.blog_entry div.blog_paginate div.blog_paginate_older { }
+       
+       div.blog_entry div.comments { }
+       div.blog_entry div.comments h3.comments_title { }
+       div.blog_entry div.comments div.comment { }
+       div.blog_entry div.comments div.comment h5.name { }
+       div.blog_entry div.comments div.comment h5.name { }
+       div.blog_entry div.comments div.comment div.date { }
+     
+       div.blog_entry div.comment_form { }
+       div.blog_entry div.comment_form h3 { }
+       div.blog_entry div.comment_form p { }
+       div.blog_entry div.comment_form form { }
+       div.blog_entry div.comment_form p label { }
+       div.blog_entry div.comment_form p input { }
+       div.blog_entry div.comment_form p.submit input { }
+       
+       /* includes/entry_full.html, includes/entry_summary.html */
+       div.blog_entry div.comment_summary { }
+     
+     </style>
