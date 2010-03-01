@@ -49,8 +49,10 @@ def entry_detail(request, year, month, day, slug, **kwargs):
     
     if request.user.is_staff: # Restrict preview to staff
         queryset = Entry.objects.all()
+        future = True
     else:
         queryset = Entry.objects.published()
+        future = False
 
     # If we are an authenticated user with the ability to
     # add/edit/delete an entry then we need to use a different manager.
@@ -63,6 +65,7 @@ def entry_detail(request, year, month, day, slug, **kwargs):
         slug = slug,
         date_field = 'pub_date',
         queryset = queryset,
+        allow_future = future,
         **kwargs
     )
 entry_detail.__doc__ = date_based.object_detail.__doc__
