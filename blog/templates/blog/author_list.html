@@ -1,0 +1,15 @@
+{% extends "blog/base.html" %}
+
+{% block title %}{{ block.super }} Authors{% endblock %}
+
+{% block content %}
+
+  {% for author in object_list %}
+    {% include "blog/includes/author.html" %}
+  {% endfor %} 
+
+  {% if is_paginated %}
+    {% include "blog/includes/author_paginate.html" %}
+  {% endif %}
+
+{% endblock content %}

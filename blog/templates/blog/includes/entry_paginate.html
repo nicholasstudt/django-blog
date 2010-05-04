@@ -1,0 +1,17 @@
+<div class="blog_paginate">
+  {% if has_previous %}
+	<div class="blog_paginate_newer">
+		<a href="?page={{ previous }}">Newer Posts</a>
+	</div>
+  {% endif %}
+
+  {% if has_next and has_previous %} 
+	<div class="blog_paginate_home"><a href="{% url entry_index %}">Home</a></div>
+  {% endif %}
+
+  {% if has_next %}
+	<div class="blog_paginate_older">
+		<a href="?page={{ next }}">Older Posts</a>
+	</div>
+  {% endif %}
+</div>

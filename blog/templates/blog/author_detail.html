@@ -1,0 +1,11 @@
+{% extends "blog/base.html" %}
+
+{% block title %}{{ block.super }} {{ object.name }}{% endblock %}
+
+{% block content %}
+
+  {% with object as author %}
+    {% include "blog/includes/author.html" %}
+  {% endwith %}
+
+{% endblock %}

@@ -1,0 +1,24 @@
+{% extends "blog/base.html" %}
+
+{% block title %}{{ block.super }} Archive for {{ year }} {% endblock %}
+{% block content_title %}{{ year }}{% endblock %}
+
+{% block content %}
+  <div class="blog_archive">
+    <h1>{{ year }}</h1>
+
+    {% load comments %}
+
+    {% for entry in object_list %}
+      {% get_comment_count for entry as comment_count %}
+      {% include "blog/includes/entry_summary.html" %}
+    {% endfor %}
+
+    {% if is_paginated %}
+      {% include "blog/includes/entry_paginate.html" %}
+    {% endif %}
+  </div>
+
+{% endblock %}
+
+

@@ -1,0 +1,36 @@
+{% extends "blog/base.html" %}
+
+{% block title %}{{ block.super }} Search{% endblock %}
+
+{% block content_title %}
+	{% if search_term or object_list %}
+		{{ object_list|length }} Result{{ object_list|length|pluralize }} for "{{ search_term }}"
+	{% else %}
+		Search
+	{% endif %}
+{% endblock %}
+
+{% block content %}
+  {% load comments %}
+ 
+  {% if object_list %}
+  <div class="blog_search_results">
+    {% for entry in object_list %}
+      {% get_comment_count for entry as comment_count %}
+      {% include "blog/includes/entry_summary.html" %}
+    {% endfor %}
+  </div>
+  {% endif %}
+
+  <div class="blog_search_form">
+    <form action="{% url entry_search %}" method="post" id="post_search_form">
+    <p>
+      <label for="search">Search</label>
+      <input type="text" name="q" value="{{ search_term }}" id="search">
+    </p>
+    <p class="submit">
+	  <input type="submit" class="button" value="Search">
+    </p>
+    </form>
+  </div>
+{% endblock %}
