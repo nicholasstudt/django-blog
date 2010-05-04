@@ -11,6 +11,7 @@ Revison history.
  - entry_latest provides a method to be used to show only the most
    recent article. This can be used as an alternative frontpage to the
    application.
+ - Refactored all templates.
 
 1.1 (January 24, 2010):
  - Preview works.
