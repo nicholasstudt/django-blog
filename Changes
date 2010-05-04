@@ -8,6 +8,9 @@ Revison history.
    that is limited by author. 
  - entry_archive template tag now takes an optional author_ident to
    limit the listing to one author. 
+ - entry_latest provides a method to be used to show only the most
+   recent article. This can be used as an alternative frontpage to the
+   application.
 
 1.1 (January 24, 2010):
  - Preview works.

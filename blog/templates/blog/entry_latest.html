@@ -1,0 +1,7 @@
+{% extends "blog/base.html" %}
+
+{% block title %}{{ object.headline|safe }}{% endblock %}
+
+{% block content %}
+	{% include "blog/includes/entry.html" %}
+{% endblock %}

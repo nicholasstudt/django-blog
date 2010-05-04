@@ -45,6 +45,31 @@ def tag_list(request, ident, **kwargs):
     )
 tag_list.__doc__ = list_detail.object_list.__doc__
 
+def entry_latest(request, **kwargs):
+    
+    if request.user.is_staff: # Restrict preview to staff
+        queryset = Entry.objects.all()
+        future = True
+    else:
+        queryset = Entry.objects.published()
+        future = False
+
+    latest = queryset[0]
+
+    return date_based.object_detail(
+        request,
+        month_format = '%m',
+        year = latest.year,
+        month = latest.month,
+        day = latest.day,
+        slug = latest.slug,
+        date_field = 'pub_date',
+        queryset = queryset,
+        allow_future = future,
+        **kwargs
+    )
+entry_latest.__doc__ = date_based.object_latest.__doc__
+
 def entry_detail(request, year, month, day, slug, **kwargs):
     
     if request.user.is_staff: # Restrict preview to staff
