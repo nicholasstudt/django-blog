@@ -59,16 +59,16 @@ def entry_latest(request, **kwargs):
     return date_based.object_detail(
         request,
         month_format = '%m',
-        year = latest.year,
-        month = latest.month,
-        day = latest.day,
-        slug = latest.slug,
+        year = latest.pub_date.year,
+        month = latest.pub_date.month,
+        day = latest.pub_date.day,
+        object_id = latest.id,
         date_field = 'pub_date',
         queryset = queryset,
         allow_future = future,
         **kwargs
     )
-entry_latest.__doc__ = date_based.object_latest.__doc__
+entry_latest.__doc__ = date_based.object_detail.__doc__
 
 def entry_detail(request, year, month, day, slug, **kwargs):
     

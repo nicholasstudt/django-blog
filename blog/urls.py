@@ -49,11 +49,11 @@ urlpatterns = patterns('',
             {'feed_dict': feeds}),
 
     url(r'^comments/', include('django.contrib.comments.urls')),
+    
+    url(r'^latest/?$', 'blog.views.entry_latest', name="entry_latest"),
 
     url(r'^(?P<author>[-\w]+)/?$', 'blog.views.entry_list', 
         name="author_index"),
-
-    url(r'^latest/?$', 'blog.views.entry_latest', name="entry_latest"),
 
     url(r'^$', 'blog.views.entry_list', name="entry_index"),
 )
