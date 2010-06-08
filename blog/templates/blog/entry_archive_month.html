@@ -3,7 +3,7 @@
 {% block title %}{{ block.super }} Archive for {{ month|date:"F Y" }}{% endblock %}
 {% block content %}
   <div class="blog_archive">
-    <h1>{{ month|date:"F" }}<a href="{% url archive_year month|date:"Y" %}">{{ month|date:"Y" }}</a></h1>
+    <h1>{{ month|date:"F" }} <a href="{% url archive_year month|date:"Y" %}">{{ month|date:"Y" }}</a></h1>
 
     {% load comments %}
  
