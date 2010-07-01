@@ -1,3 +1,6 @@
+import calendar
+import datetime
+
 from django import template
 from django.core.exceptions import ObjectDoesNotExist
 from django.template import TemplateSyntaxError
@@ -107,3 +110,45 @@ def entry_archive(parser, token):
 
     return EntryList(bits[1], type, limit, author)
 entry_archive = register.tag(entry_archive)
+
+def month_cal(year=datetime.date.today().year, month=datetime.date.today().month): 
+
+    # Fix this to just use calendar.* for all math.
+
+    first_day_of_month = datetime.date(year, month, 1)
+    last_day_of_month = calendar.monthrange(year, month)
+    first_day_of_calendar = first_day_of_month - datetime.timedelta(first_day_of_month.weekday())
+
+    last_day_of_calendar = datetime.date(year,month,last_day_of_month[1]) + datetime.timedelta(7 - calendar.weekday(year,month,last_day_of_month[1]))
+
+    event_list = Entry.objects.published(pub_date__gte=first_day_of_calendar, pub_date__lte=last_day_of_calendar)
+
+    month_cal = []
+    week = []
+    week_headers = []
+
+    i = 0
+    day = first_day_of_calendar
+    while day <= last_day_of_calendar:
+        if i < 7:
+            week_headers.append(day)
+        cal_day = {}
+        cal_day['day'] = day
+        cal_day['event'] = False
+        for event in event_list:
+            if day >= event.start_date.date() and day <= event.end_date.date():
+                cal_day['event'] = True
+        if day.month == month:
+            cal_day['in_month'] = True
+        else:
+            cal_day['in_month'] = False  
+        week.append(cal_day)
+        if day.weekday() == 6:
+            month_cal.append(week)
+            week = []
+        i += 1
+        day += datetime.timedelta(1)
+
+    return {'calendar': month_cal, 'headers': week_headers}
+
+register.inclusion_tag('blog/tags/calendar.html')(month_cal)
