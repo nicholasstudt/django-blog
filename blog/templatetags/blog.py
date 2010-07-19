@@ -41,6 +41,34 @@ class EntryList(template.Node):
             context[self.var_name] = list
         return ''
 
+class Calendar(template.Node):
+    def __init__(self, var_name, kind='month', limit=None, author=None):
+        self.var_name = var_name
+        self.kind = kind
+        self.limit = limit 
+        self.author = author 
+
+    def render(self, context):
+        author = None
+
+        if self.author:
+            try: 
+                author = Author.objects.get(ident=self.author)
+            except ObjectDoesNotExist: 
+                pass
+
+        if author:
+            list = Entry.objects.published(author=author).dates('pub_date', self.kind, order='DESC')
+        else: 
+            list = Entry.objects.published().dates('pub_date', self.kind, 
+                                               order='DESC')
+
+        if self.limit:
+            context[self.var_name] = list[:self.limit]
+        else:
+            context[self.var_name] = list
+        return ''
+
 class TagList(template.Node):
     def __init__(self, var_name):
         self.var_name = var_name
@@ -75,7 +103,7 @@ tag_list_as = register.tag(tag_list_as)
 
 def entry_archive(parser, token):
     """
-    List all of the tags.
+    Listing of of years, months, or days that have entries.
 
     Example::
 
@@ -111,7 +139,46 @@ def entry_archive(parser, token):
     return EntryList(bits[1], type, limit, author)
 entry_archive = register.tag(entry_archive)
 
-def month_cal(year=datetime.date.today().year, month=datetime.date.today().month): 
+def month_calendar(parser, token):
+    """
+    Create a calendar of a month with the days that have entries linked
+    to that day in the archive.
+
+    Example::
+
+        {% month_calendar <year> <month> [author_ident] %}
+        
+        {% load blog %}
+
+        {% month_calendar 2010 11 author_ident_here %} 
+
+    """
+    
+    author = None
+    year = datetime.date.today().year
+    month = datetime.date.today().month
+
+    bits = token.contents.split()
+
+    if len(bits) < 2:
+        raise TemplateSyntaxError, "'%s' tag requires at least the context name to populate" % bits[0]
+    
+    if len(bits) >= 3:
+        (limit, type) = bits[2].split(':') 
+        try: 
+            limit = int(limit)
+        except ValueError: 
+            limit = None
+
+    if len(bits) == 4:
+        author = bits[3]
+
+    return Calendar(bits[1], type, limit, author)
+entry_archive = register.tag(entry_archive)
+
+def month_cal(parser, token):
+    year=datetime.date.today().year
+    month=datetime.date.today().month
 
     # Fix this to just use calendar.* for all math.
 
@@ -120,6 +187,8 @@ def month_cal(year=datetime.date.today().year, month=datetime.date.today().month
     first_day_of_calendar = first_day_of_month - datetime.timedelta(first_day_of_month.weekday())
 
     last_day_of_calendar = datetime.date(year,month,last_day_of_month[1]) + datetime.timedelta(7 - calendar.weekday(year,month,last_day_of_month[1]))
+
+    return last_day_of_calendar
 
     event_list = Entry.objects.published(pub_date__gte=first_day_of_calendar, pub_date__lte=last_day_of_calendar)
 

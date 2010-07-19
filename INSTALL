@@ -83,3 +83,34 @@ To install run this command from the command prompt:
        div.blog_entry div.comment_summary { }
      
      </style>
+
+* Configure RPC 
+
+  By default, uploads to settings.MEDIA_ROOT/[datestamp]_[orig_name].
+       
+  If settings.BLOG_RPC_UPLOAD_PATH is set to a tuple, I will run
+  strftime against it, and append the passed in filename to the end of
+  the time format string. The tuple should be ( file_path, url_path )
+
+  If you set settings.BLOG_RPC_UPLOAD_PATH as a python callable, I will
+  call it with **kwargs set at {user: django user object, author_id:
+  blog author id, name: file name to upload } which must return a tuple
+  that is a valid path and URL to that path.
+
+  Two settings.py examples:
+
+  1) 
+    BLOG_RPC_UPLOAD_PATH = ("/home/cgee/tmp/blog/%Y/%m/%d/", "/static_media/%Y/%m/%d/")
+
+  2)
+    import time
+	def rpc_path(**kwargs):
+		base_path = time.strftime('%d/%m/%Y/', time.localtime())
+		base_path = "%s%s/%s" % (base_path,
+								 kwargs['user'].username,
+								 kwargs['name'])
+		return ("/home/cgee/tmp/blog/%s" % base_path, 
+				"/static_media/%s" % base_path)
+
+	BLOG_RPC_UPLOAD_PATH = rpc_path
+

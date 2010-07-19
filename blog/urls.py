@@ -52,9 +52,11 @@ urlpatterns = patterns('',
     
     url(r'^latest/?$', 'blog.views.entry_latest', name="entry_latest"),
 
+    # New RPC handling
+    url(r'^rpc/?$', 'blog.rpc.xmlrpc.view', {'module': 'blog.rpc.metaweblog' }),
+
     url(r'^(?P<author>[-\w]+)/?$', 'blog.views.entry_list', 
         name="author_index"),
 
     url(r'^$', 'blog.views.entry_list', name="entry_index"),
 )
-
