@@ -42,32 +42,64 @@ class EntryList(template.Node):
         return ''
 
 class Calendar(template.Node):
-    def __init__(self, var_name, kind='month', limit=None, author=None):
-        self.var_name = var_name
-        self.kind = kind
-        self.limit = limit 
+    def __init__(self, year, month, author=None):
+        self.year = year 
+        self.month = month 
         self.author = author 
 
     def render(self, context):
-        author = None
+        year = self.year
+        month = self.month
+        author = self.author
 
         if self.author:
             try: 
                 author = Author.objects.get(ident=self.author)
             except ObjectDoesNotExist: 
                 pass
-
+           
         if author:
-            list = Entry.objects.published(author=author).dates('pub_date', self.kind, order='DESC')
+            event_list = Entry.objects.published_bymonth(year, month, author=author)
         else: 
-            list = Entry.objects.published().dates('pub_date', self.kind, 
-                                               order='DESC')
+            event_list = Entry.objects.published_bymonth(year, month)
 
-        if self.limit:
-            context[self.var_name] = list[:self.limit]
-        else:
-            context[self.var_name] = list
-        return ''
+        # Fix this to just use calendar.* for all math.
+
+        start = datetime.date(year, month, 1)
+        end = datetime.date(year, month, calendar.monthrange(year, month)[1])
+
+        first_day_of_calendar = start - datetime.timedelta(start.weekday()) 
+        last_day_of_calendar = end + datetime.timedelta(7 - end.weekday())
+
+        month_cal = []
+        week = []
+        week_headers = []
+    
+        i = 0
+        day = first_day_of_calendar
+        while day <= last_day_of_calendar:
+            if i < 7:
+                week_headers.append(day)
+            cal_day = {}
+            cal_day['day'] = day
+            cal_day['event'] = False
+            for event in event_list:
+                if day >= event.pub_date.date() and day <= event.pub_date.date():
+                    cal_day['event'] = True
+            if day.month == month:
+                cal_day['in_month'] = True
+            else:
+                cal_day['in_month'] = False  
+            week.append(cal_day)
+            if day.weekday() == 6:
+                month_cal.append(week)
+                week = []
+            i += 1
+            day += datetime.timedelta(1)
+    
+        t = template.loader.get_template('blog/tags/calendar.html')
+
+        return t.render(template.Context({'month': start, 'calendar': month_cal, 'headers': week_headers}, autoescape=context.autoescape))
 
 class TagList(template.Node):
     def __init__(self, var_name):
@@ -77,6 +109,7 @@ class TagList(template.Node):
         context[self.var_name] = Tag.objects.all()
         return ''
 
+@register.tag
 def tag_list_as(parser, token):
     """
     List all of the tags.
@@ -99,8 +132,8 @@ def tag_list_as(parser, token):
     if len(bits) != 2:
         raise TemplateSyntaxError, "'%s' tag requires a single argument: the context name to populate" % bits[0]
     return TagList(bits[1])
-tag_list_as = register.tag(tag_list_as)
 
+@register.tag
 def entry_archive(parser, token):
     """
     Listing of of years, months, or days that have entries.
@@ -137,87 +170,84 @@ def entry_archive(parser, token):
         author = bits[3]
 
     return EntryList(bits[1], type, limit, author)
-entry_archive = register.tag(entry_archive)
 
+@register.tag
 def month_calendar(parser, token):
     """
     Create a calendar of a month with the days that have entries linked
     to that day in the archive.
 
+    If provided a negative difference it will render the month in the
+    past. -1 will render last month, -2 will render two months ago, etc. 
+
     Example::
 
         {% month_calendar <year> <month> [author_ident] %}
+        {% month_calendar <difference> [author_ident] %}
         
         {% load blog %}
 
         {% month_calendar 2010 11 author_ident_here %} 
+        {% month_calendar 2010 11 %} 
+        
+        {% month_calendar -1 author_ident_here %} 
+        {% month_calendar -1 %} 
 
     """
-    
-    author = None
+   
+    author = difference = None
     year = datetime.date.today().year
     month = datetime.date.today().month
 
     bits = token.contents.split()
 
-    if len(bits) < 2:
-        raise TemplateSyntaxError, "'%s' tag requires at least the context name to populate" % bits[0]
-    
-    if len(bits) >= 3:
-        (limit, type) = bits[2].split(':') 
-        try: 
-            limit = int(limit)
-        except ValueError: 
-            limit = None
+    # AUTHOR -OR- DIFFERENCE
+    if len(bits) == 2:
+        try:
+            difference = int(bits[1])
+        except ValueError:
+            author = bits[1]
 
+    # YYYY MM  -OR- DIFFERENCE AUTHOR
+    if len(bits) == 3:
+        try: 
+            year = int(bits[1])
+            month = int(bits[2])
+        except ValueError:
+            difference = bits[1]
+            author = bits[2]
+           
+
+    # YYYY MM AUTHOR
     if len(bits) == 4:
+        year = bits[1]
+        month = bits[2]
         author = bits[3]
 
-    return Calendar(bits[1], type, limit, author)
-entry_archive = register.tag(entry_archive)
+    if difference:
+        today = datetime.date.today()
+        year = today.year
+        month = today.month
 
-def month_cal(parser, token):
-    year=datetime.date.today().year
-    month=datetime.date.today().month
-
-    # Fix this to just use calendar.* for all math.
-
-    first_day_of_month = datetime.date(year, month, 1)
-    last_day_of_month = calendar.monthrange(year, month)
-    first_day_of_calendar = first_day_of_month - datetime.timedelta(first_day_of_month.weekday())
-
-    last_day_of_calendar = datetime.date(year,month,last_day_of_month[1]) + datetime.timedelta(7 - calendar.weekday(year,month,last_day_of_month[1]))
-
-    return last_day_of_calendar
-
-    event_list = Entry.objects.published(pub_date__gte=first_day_of_calendar, pub_date__lte=last_day_of_calendar)
-
-    month_cal = []
-    week = []
-    week_headers = []
-
-    i = 0
-    day = first_day_of_calendar
-    while day <= last_day_of_calendar:
-        if i < 7:
-            week_headers.append(day)
-        cal_day = {}
-        cal_day['day'] = day
-        cal_day['event'] = False
-        for event in event_list:
-            if day >= event.start_date.date() and day <= event.end_date.date():
-                cal_day['event'] = True
-        if day.month == month:
-            cal_day['in_month'] = True
+        if difference > 0:
+            month += difference
+            while month > 12:
+                month -= 12
+                year += 1
         else:
-            cal_day['in_month'] = False  
-        week.append(cal_day)
-        if day.weekday() == 6:
-            month_cal.append(week)
-            week = []
-        i += 1
-        day += datetime.timedelta(1)
+            month += difference
+            while month < 0:
+                month += 12
+                year -= 1
 
-    return {'calendar': month_cal, 'headers': week_headers}
+    try: 
+        year = int(year)
+    except ValueError: 
+        year = datetime.date.today().year
+    
+    try: 
+        month = int(month)
+    except ValueError: 
+        month = datetime.date.today().month
 
-register.inclusion_tag('blog/tags/calendar.html')(month_cal)
+    return Calendar(year, month, author)

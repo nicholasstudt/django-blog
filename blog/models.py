@@ -1,3 +1,6 @@
+import calendar
+import datetime
+
 from django.db import models
 from django.conf import settings
 from django.contrib.sites.models import Site
@@ -6,15 +9,23 @@ from django.db.models import Manager
 
 from django.contrib.comments.moderation import CommentModerator, moderator
 
-import datetime
-
 DRAFT = 1
 PUBLISHED = 2
 
 class EntryPublishedManager(Manager):
     """Returns published posts that are not in the future.""" 
-    
+    def published_bymonth(self, year, month, **kwargs):
+        "Get all items published in a given month"
+        gte = datetime.date(year, month, 1)
+        lte = datetime.date(year, month, calendar.monthrange(year, month)[1])
+
+        if lte >= datetime.date.today(): # Dont' show the future.
+            lte = datetime.datetime.now()
+
+        return self.get_query_set().filter(status__gte=PUBLISHED, pub_date__gte=gte, pub_date__lte=lte, sites__id__exact=settings.SITE_ID, **kwargs)
+
     def published(self, **kwargs):
+        # If pub_date__lte is not in kwargs add it.
         return self.get_query_set().filter(status__gte=PUBLISHED, pub_date__lte=datetime.datetime.now(), sites__id__exact=settings.SITE_ID, **kwargs)
 
 # Create your models here.

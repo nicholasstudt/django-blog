@@ -4,6 +4,7 @@ Revison history.
  - Added {% csrf_token %} to search.
  - RPC support for Blogger 1.0, MetaWeblog, and MoveableType (Patch
    provided by Carson Gee.)
+ - Added month_calendar template tag.
  
 1.2 (May  3 2010):
  - Added author list page, which shows all authors.
