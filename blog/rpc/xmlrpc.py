@@ -16,6 +16,7 @@ import sys
 import traceback
 import SimpleXMLRPCServer
 from django.http import HttpResponseServerError, HttpResponse
+from django.views.decorators.csrf import csrf_exempt
 
 def public(f):
     f.public = True
@@ -132,7 +133,7 @@ class SafeXMLRPCView(SimpleXMLRPCServer.SimpleXMLRPCDispatcher):
         else:
             raise Exception('method "%s" is not supported' % method)
 
-
+@csrf_exempt
 def view(request, module):
     #print(request.raw_post_data)
     if sys.version_info[:3] >= (2,5,):
