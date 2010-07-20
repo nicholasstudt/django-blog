@@ -5,7 +5,7 @@ Revison history.
  - RPC support for Blogger 1.0, MetaWeblog, and MoveableType (Patch
    provided by Carson Gee.)
  - Added month_calendar template tag.
- - Migrated to new feeds framework (Now reuqire Django 1.2)
+ - Migrated to new feeds framework (Now requires Django 1.2)
  - Feed by tag now works as expected. You can specify one custom tag to
    get a individualized feed.
  
