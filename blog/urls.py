@@ -1,11 +1,6 @@
 from django.conf.urls.defaults import *
-from blog.feeds import LatestEntriesByTag, LatestEntries, LatestComments
+from blog.feeds import LatestEntriesByTag, LatestEntriesFeed, LatestComments
 
-feeds = {   
-    'latest': LatestEntries,
-    'tags': LatestEntriesByTag,
-    'comments': LatestComments,
-}
 
 urlpatterns = patterns('',
     # /YYYY-MM-DD/slug (allow anything in as slug, for old idents) 
@@ -45,8 +40,13 @@ urlpatterns = patterns('',
         name="entry_search"),
 
     # /feeds/tags, /feeds/latest,
-    url(r'^feeds/(?P<url>.*)/?$', 'django.contrib.syndication.views.feed',
-            {'feed_dict': feeds}),
+    url(r'^feeds/latest/?$', LatestEntriesFeed(), 
+        name='feed_latest'),
+
+    url(r'^feeds/tags/(?P<tag>[-\w]+)/?$', LatestEntriesByTag(), 
+        name='feed_tags' ),
+
+    url(r'^feeds/comments/?$', LatestComments(), name='feed_comments' ),
 
     url(r'^comments/', include('django.contrib.comments.urls')),
     
