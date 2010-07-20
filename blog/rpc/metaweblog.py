@@ -175,7 +175,7 @@ def metaWeblog_getCategories(user, blogid):
                                    reverse('tag_list', kwargs={'ident': tag.tag }), 
                                    Site.objects.get_current()),
                      'rssUrl': full_url(
-                                   reverse('feed_tags', kwargs={'ident': tag.tag }), 
+                                   reverse('feed_tags', kwargs={'tag': tag.tag }), 
                                    Site.objects.get_current()),
                      'categoryName': tag.tag,
                      'categoryId': str(tag.id)
