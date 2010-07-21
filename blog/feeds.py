@@ -10,6 +10,8 @@ class LatestEntriesFeed(Feed):
     _site = Site.objects.get_current()
     title = '%s feed' % _site.name
     description = '%s posts feed.' % _site.name
+    title_template = 'feeds/latest/title.html'
+    description_template = 'feeds/latest/description.html'
 
     def items(self):
         return Entry.objects.published()[:10]
@@ -23,6 +25,8 @@ class LatestEntriesFeed(Feed):
 
 class LatestEntriesByTag(Feed):
     _site = Site.objects.get_current()
+    title_template = 'feeds/tags/title.html'
+    description_template = 'feeds/tags/description.html'
 
     def get_object(self, request, tag):
         return get_object_or_404(Tag, tag=tag)
