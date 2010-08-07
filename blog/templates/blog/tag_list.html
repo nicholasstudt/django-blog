@@ -1,0 +1,18 @@
+{% extends "blog/base.html" %}
+
+{% block title %}{{ block.super }} Listing{% endblock %}
+
+{% block content %}
+  {% load comments %}
+
+  <h1>{{ tag }}</h1>
+
+  {% for entry in object_list %}
+    {% get_comment_count for entry as comment_count %}
+    {% include "blog/includes/entry_full.html" %}
+  {% endfor %}
+
+  {% if is_paginated %}
+    {% include "blog/includes/entry_paginate.html" %}
+  {% endif %}
+{% endblock %}

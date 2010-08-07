@@ -44,7 +44,7 @@ class LatestEntriesByTag(Feed):
         return obj.pub_date
 
     def items(self, obj):
-        return Entry.objects.published()[:10]
+        return Entry.objects.published(tags__id__exact=object.pk)[:10]
 
 class LatestComments(LatestCommentFeed):
     # Accept all of the contrib.comments defaults.

@@ -30,17 +30,23 @@ def entry_list(request, author=None, page=0, **kwargs):
     )
 entry_list.__doc__ = list_detail.object_list.__doc__
 
-def tag_list(request, ident, **kwargs):
+def tag_list(request, ident, page=0, **kwargs):
 
     # Should this take more than one tag at a time?
-    try: 
-        tid = Tag.objects.filter(tag__exact=ident).values_list('id', flat=True)[0]
-    except IndexError:
-        raise http.Http404, 'No tag found matching the query'
+    tag = get_object_or_404(Tag, ident=ident)
+
+    try:
+        paginate_by = settings.BLOG_PAGINATE_TAG_LIST
+    except AttributeError:
+        paginate_by = 10
 
     return list_detail.object_list(
         request,
-        queryset = Entry.objects.published(tags__id__exact=tid),
+        page = page,
+        paginate_by = paginate_by,
+        queryset = Entry.objects.published(tags__id__exact=tag.pk),
+        template_name = 'blog/tag_list.html'
+        extra_context = {'tag': tag },
         **kwargs
     )
 tag_list.__doc__ = list_detail.object_list.__doc__

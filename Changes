@@ -1,5 +1,9 @@
 Revison history.
 
+ - Fixing bug in tag feed (always showing the main blog listing)
+ - Add new template tag_list.html to contain the listing of items by tag.
+ - Adding pagination to tag_list and BLOG_PAGINATE_TAG_LIST.
+
 1.3 (July 20 2010):
  - Added {% csrf_token %} to search.
  - RPC support for Blogger 1.0, MetaWeblog, and MoveableType (Patch
