@@ -45,7 +45,7 @@ def tag_list(request, ident, page=0, **kwargs):
         page = page,
         paginate_by = paginate_by,
         queryset = Entry.objects.published(tags__id__exact=tag.pk),
-        template_name = 'blog/tag_list.html'
+        template_name = 'blog/tag_list.html',
         extra_context = {'tag': tag },
         **kwargs
     )
@@ -54,7 +54,7 @@ tag_list.__doc__ = list_detail.object_list.__doc__
 def entry_latest(request, **kwargs):
     
     if request.user.is_staff: # Restrict preview to staff
-        queryset = Entry.objects.all()
+        queryset = Entry.objects.all_published()
         future = True
     else:
         queryset = Entry.objects.published()
@@ -79,7 +79,7 @@ entry_latest.__doc__ = date_based.object_detail.__doc__
 def entry_detail(request, year, month, day, slug, **kwargs):
     
     if request.user.is_staff: # Restrict preview to staff
-        queryset = Entry.objects.all()
+        queryset = Entry.objects.all_published()
         future = True
     else:
         queryset = Entry.objects.published()

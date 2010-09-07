@@ -28,6 +28,11 @@ class EntryPublishedManager(Manager):
         # If pub_date__lte is not in kwargs add it.
         return self.get_query_set().filter(status__gte=PUBLISHED, pub_date__lte=datetime.datetime.now(), sites__id__exact=settings.SITE_ID, **kwargs)
 
+    def all_published(self, **kwargs):
+        # If pub_date__lte is not in kwargs add it.
+        return self.get_query_set().filter(sites__id__exact=settings.SITE_ID, **kwargs)
+
+
 # Create your models here.
 class Entry(models.Model):
     """Entry Model."""
