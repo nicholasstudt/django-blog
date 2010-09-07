@@ -92,10 +92,10 @@ class Entry(models.Model):
     get_absolute_url = models.permalink(get_absolute_url)
 
     def get_previous_post(self):
-        return(self.get_previous_by_pub_date(status__gte=PUBLISHED))
+        return(self.get_previous_by_pub_date(status__gte=PUBLISHED, sites__id__exact=settings.SITE_ID))
                 
     def get_next_post(self):
-        return(self.get_next_by_pub_date(status__gte=PUBLISHED))
+        return(self.get_next_by_pub_date(status__gte=PUBLISHED, sites__id__exact=settings.SITE_ID))
 
 
 class EntryModerator(CommentModerator):
