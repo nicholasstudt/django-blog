@@ -33,7 +33,7 @@ entry_list.__doc__ = list_detail.object_list.__doc__
 def tag_list(request, ident, page=0, **kwargs):
 
     # Should this take more than one tag at a time?
-    tag = get_object_or_404(Tag, ident=ident)
+    tag = get_object_or_404(Tag, tag=ident)
 
     try:
         paginate_by = settings.BLOG_PAGINATE_TAG_LIST
