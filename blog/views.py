@@ -72,6 +72,7 @@ def entry_latest(request, **kwargs):
         date_field = 'pub_date',
         queryset = queryset,
         allow_future = future,
+        template_name = 'blog/entry_latest.html',
         **kwargs
     )
 entry_latest.__doc__ = date_based.object_detail.__doc__
