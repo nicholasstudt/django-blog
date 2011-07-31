@@ -47,8 +47,8 @@ class Entry(models.Model):
         from django.core.exceptions import ImproperlyConfigured 
         raise ImproperlyConfigured("You're using the Django \"sites framework\" without having set the SITE_ID setting. Create a site in your database and set the SITE_ID setting to fix this error.") 
 
-    pub_date = models.DateTimeField(_('date published'))
     slug = models.SlugField(_('slug'),unique_for_date='pub_date')
+    pub_date = models.DateTimeField(_('date published'))
     status = models.IntegerField(_('status'), choices=STATUS_CHOICES, default=PUBLISHED)
     comments = models.BooleanField(_('allow comments'), default=True)
 
