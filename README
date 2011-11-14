@@ -1,0 +1,49 @@
+django-file-manager
+======================================================
+
+This project is a yet another simple blog. There are many like it, but
+this one is mine.
+
+Example usage in your sites' urls.py file:
+    (r'^', include('blog.urls')),
+
+Version 1.3.1 Features
+----------------------
+
+ * Fixed all pages to use Entry manager so all entries show up on the correct sites.
+ * Fixing bug in tag feed (always showing the main blog listing)
+ * Add new template tag_list.html to contain the listing of items by tag.
+ * Adding pagination to tag_list and BLOG_PAGINATE_TAG_LIST.
+
+Version 1.3 Features
+--------------------
+
+ ** Version 1.3 requires Django 1.2. **
+
+ * Added {% csrf_token %} to search.
+ * RPC support for Blogger 1.0, MetaWeblog, and MoveableType (Patch provided by Carson Gee.)
+ * Added month_calendar template tag.
+ * Migrated to new feeds framework (Now requires Django 1.2)
+ * Feed by tag now works as expected. You can specify one custom tag to get a individualized feed.
+
+Version 1.2 Features
+--------------------
+
+ * Added author list page, which shows all authors.
+ * BLOG_PAGINATE_AUTHOR_LIST controls the number of pages show in the author_list page, default is 10.
+ * Added author_index page which is an alias to the entry_index page that is limited by author.
+ * entry_archive template tag now takes an optional author_ident to limit the listing to one author.
+ * entry_latest provides a method to be used to show only the most recent article. This can be used as an alternative frontpage to the application.
+ * All templates have been refactored.
+
+Version 1.1 Features
+--------------------
+
+ * Comment moderation added, controlled by the following variables in a sites settings.py:
+	* BLOG_COMMENTS_CLOSE_AFTER = <# days after which comments are closed>
+	* BLOG_COMMENTS_MODERATE_AFTER = <# days after which comments are moderated>
+	* BLOG_COMMENTS_EMAIL_NOTIFICATION = True/False?
+ * You must use the new admin include or the default templates will not work.
+ * Entry and author pages now show edit links that allow direct editing of the element via the admin interface.
+ * Draft entries show the word 'Draft' in their headline during the preview.
+ * BLOG_PAGINATE_ENTRY_LIST controls the number of pages show in the entry_list page, default is 10.
