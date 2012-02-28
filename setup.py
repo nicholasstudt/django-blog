@@ -49,11 +49,11 @@ setup(
     version = version.replace(' ', '-'),
     author = 'Nicholas Studt',
     author_email = 'nicholas@nicholasstudt.com',
-    url = 'http://code.nicholasstudt.com/',
+    url = 'http://nicholasstudt.com/code/',
     description = 'Simple Django blog.',
     packages = packages, 
     data_files = data_files,
-    scripts = ['blog/bin/blog-sqlmigrate.py'],
+    scripts = [''],
 #    requires = ('django (>=1.0.2)',),
 )
 
