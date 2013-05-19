@@ -4,174 +4,135 @@ from django.conf import settings
 from django.shortcuts import render_to_response, get_object_or_404
 from django.template import loader, RequestContext
 from django.db.models import Q
-from django.views.generic import date_based, list_detail
+#from django.views.generic import date_based, list_detail
+#from django.views.generic.dates DateDetail
+from django.views.generic.list import ListView
+from django.views.generic import dates
+from django.views.generic.base import TemplateView
+from django.views.generic.detail import DetailView
 
 from blog.models import Entry, Author, Tag
 
-def entry_list(request, author=None, page=0, **kwargs):
+class EntryList(ListView):
 
     try:
         paginate_by = settings.BLOG_PAGINATE_ENTRY_LIST
     except AttributeError:
         paginate_by = 10
 
-    if author:
-        object = get_object_or_404(Author, ident=author)
-        queryset = Entry.objects.published(author=object)
-    else: 
-        queryset = Entry.objects.published()
+    def get_queryset(self):
+        author = self.kwargs.get('author', None)
+        if author:
+            object = get_object_or_404(Author, ident=author)
+            queryset = Entry.objects.published(author=object)
+        else:
+            queryset = Entry.objects.published()
+            
+        return queryset
 
-    return list_detail.object_list(
-        request,
-        page = page,
-        paginate_by = paginate_by,
-        queryset = queryset,
-        **kwargs
-    )
-entry_list.__doc__ = list_detail.object_list.__doc__
+class TagList(ListView):
 
-def tag_list(request, ident, page=0, **kwargs):
-
-    # Should this take more than one tag at a time?
-    tag = get_object_or_404(Tag, tag=ident)
+    template_name = 'blog/tag_list.html'
+    extra_context = { }
 
     try:
         paginate_by = settings.BLOG_PAGINATE_TAG_LIST
     except AttributeError:
         paginate_by = 10
 
-    return list_detail.object_list(
-        request,
-        page = page,
-        paginate_by = paginate_by,
-        queryset = Entry.objects.published(tags__id__exact=tag.pk),
-        template_name = 'blog/tag_list.html',
-        extra_context = {'tag': tag },
-        **kwargs
-    )
-tag_list.__doc__ = list_detail.object_list.__doc__
+    def get_queryset(self):
+        tag = get_object_or_404(Tag, tag=self.kwargs['ident'])
+        self.extra_context.update( { 'tag': tag } )
+        return Entry.objects.published(tags__id__exact=tag.pk)
 
-def entry_latest(request, **kwargs):
-    
-    if request.user.is_staff: # Restrict preview to staff
-        queryset = Entry.objects.all_published()
-        future = True
-    else:
-        queryset = Entry.objects.published()
-        future = False
+    def get_context_data(self, **kwargs):
+        context = super(TagList, self).get_context_data(**kwargs)
+        context.update(self.extra_context)
+        return context
 
-    latest = queryset[0]
+class EntryLatest(dates.DateDetailView):
+    template_name = 'blog/entry_latest.html',
+    month_format = '%m'
+    date_field = 'pub_date'
+    latest = None
 
-    return date_based.object_detail(
-        request,
-        month_format = '%m',
-        year = latest.pub_date.year,
-        month = latest.pub_date.month,
-        day = latest.pub_date.day,
-        object_id = latest.id,
-        date_field = 'pub_date',
-        queryset = queryset,
-        allow_future = future,
-        template_name = 'blog/entry_latest.html',
-        **kwargs
-    )
-entry_latest.__doc__ = date_based.object_detail.__doc__
+    def get_year(self):
+        return self.latest.pub_date.year
 
-def entry_detail(request, year, month, day, slug, **kwargs):
-    
-    if request.user.is_staff: # Restrict preview to staff
-        queryset = Entry.objects.all_published()
-        future = True
-    else:
-        queryset = Entry.objects.published()
-        future = False
+    def get_month(self):
+        return self.latest.pub_date.month
 
-    # If we are an authenticated user with the ability to
-    # add/edit/delete an entry then we need to use a different manager.
-    return date_based.object_detail(
-        request,
-        month_format = '%m',
-        year = year,
-        month = month,
-        day = day,
-        slug = slug,
-        date_field = 'pub_date',
-        queryset = queryset,
-        allow_future = future,
-        **kwargs
-    )
-entry_detail.__doc__ = date_based.object_detail.__doc__
+    def get_day(self):
+        return self.latest.pub_date.day
 
-def entry_search(request, template_name='blog/entry_search.html'):
-    response = {}
-    # This should check tags, and headlines as well.
-    if request.POST:
+    def get_object(self):
+        if self.request.user.is_staff: # Restrict preview to staff
+            queryset = Entry.objects.all_published()
+            self.allow_future = True
+        else:
+            queryset = Entry.objects.published()
+            self.allow_future = False
+        self.latest = queryset[0]
+        return self.latest
+
+class EntryDetail(dates.DateDetailView):
+
+    month_format = '%m'
+    date_field = 'pub_date'
+
+    def get_queryset(self):
+        if self.request.user.is_staff: # Restrict preview to staff
+            queryset = Entry.objects.all_published()
+            self.future = True
+        else:
+            queryset = Entry.objects.published()
+            self.future = False
+        return queryset
+
+class EntrySearch(TemplateView):
+    template_name = 'blog/entry_search.html'
+
+    def post(self, request):
         search_term = '%s' % request.POST['q']
         post_list = Entry.objects.published().filter(
-                                Q(content__icontains=search_term) |
-                                #Q(tags__icontains=search_term) |
-                                Q(headline__icontains=search_term) )
-        response = {'object_list': post_list, 'search_term':search_term}
-    return render_to_response(template_name,     
-                                response,
-                                context_instance=RequestContext(request))
-        
+            Q(content__icontains=search_term) |
+            #Q(tags__icontains=search_term) |
+            Q(headline__icontains=search_term) )
+        response = {'object_list': post_list, 'search_term':search_term }
+        return render_to_response(self.template_name, response)
 
-def entry_archive_year(request, year, **kwargs):
-    return date_based.archive_year(
-        request,
-        year = year,
-        date_field = 'pub_date',
-        queryset = Entry.objects.published(),
-        make_object_list = True,
-        **kwargs
-    )
-entry_archive_year.__doc__ = date_based.archive_year.__doc__
+class EntryArchiveYear(dates.YearArchiveView):
+    date_field = 'pub_date'
+    make_object_list = True
 
-def entry_archive_month(request, year, month, **kwargs):
-    return date_based.archive_month(
-        request,
-        year = year,
-        month = month,
-        date_field = 'pub_date',
-        month_format = '%m',
-        queryset = Entry.objects.published(),
-        **kwargs
-    )
-entry_archive_month.__doc__ = date_based.archive_month.__doc__
+    def get_queryset(self):
+        return Entry.objects.published()
 
-def entry_archive_day(request, year, month, day, **kwargs):
-    return date_based.archive_day(
-        request,
-        year = year,
-        month = month,
-        day = day,
-        date_field = 'pub_date',
-        month_format = '%m',
-        queryset = Entry.objects.published(),
-        **kwargs
-    )
-entry_archive_day.__doc__ = date_based.archive_day.__doc__
+class EntryArchiveMonth(dates.MonthArchiveView):
+    date_field = 'pub_date'
+    month_format = '%m'
 
-def author_detail(request, ident, **kwargs):
-    return list_detail.object_detail(
-            request,
-            slug = ident,
-            slug_field = 'ident',
-            queryset = Author.objects.all(),
-            **kwargs )
-author_detail.__doc__ = list_detail.object_detail.__doc__
+    def get_queryset(self):
+        return Entry.objects.published()
 
-def author_list(request, page=0, **kwargs):
+class EntryArchiveDay(dates.DayArchiveView):
+    date_field = 'pub_date'
+    month_format = '%m'
 
+    def get_queryset(self):
+        return Entry.objects.published()
+
+class AuthorDetail(DetailView):
+    slug_field = 'ident'
+    slug_url_kwarg = 'ident'
+    model = Author
+
+class AuthorList(ListView):
+    slug_field = 'ident'
+    slug_url_kwarg = 'ident'
+    model = Author
     try:
         paginate_by = settings.BLOG_PAGINATE_AUTHOR_LIST
     except AttributeError:
         paginate_by = 10
 
-    return list_detail.object_list(
-            request,
-            page = page,
-            paginate_by = paginate_by,
-            queryset = Author.objects.all(),
-            **kwargs )
