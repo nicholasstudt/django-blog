@@ -1,5 +1,5 @@
 <div class="blog_author" >
-  <h2>{{ author.name|safe }} {% if perms.blog.change_author %}<a href="{% url admin:blog_author_change author.id %}">Edit</a>{% endif %}</h2>
+  <h2>{{ author.name|safe }} {% if perms.blog.change_author %}<a href="{% url "admin:blog_author_change" author.id %}">Edit</a>{% endif %}</h2>
   
   <div class="content">
     <div class="email">
@@ -9,7 +9,7 @@
     {{ author.content|safe }}
 	
     <div class="recent">
-      <h3><a href="{% url author_index author.ident %}">Recent articles by {{ author.name }}</a></h3>
+      <h3><a href="{% url "author_index" author.ident %}">Recent articles by {{ author.name }}</a></h3>
       <ul>
       {% for article in author.entry_set.published|slice:":10"  %}
         <li><a href="{{ article.get_absolute_url }}">{{ article.headline }}</a></li>

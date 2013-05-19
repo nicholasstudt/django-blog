@@ -1,6 +1,6 @@
 <div class="blog_entry{% if not entry.is_published %} draft{% endif %}">
 
-  <h2 class="topic"><a href="{{ entry.get_absolute_url }}">{{ entry.headline|safe }}</a> {% if perms.blog.change_entry %}<span class="edit"><a href="{% url admin:blog_entry_change entry.id %}">Edit</a></span>{% endif %} 
+  <h2 class="topic"><a href="{{ entry.get_absolute_url }}">{{ entry.headline|safe }}</a> {% if perms.blog.change_entry %}<span class="edit"><a href="{% url "admin:blog_entry_change" entry.id %}">Edit</a></span>{% endif %} 
   </h2>
 
   <div class="content" >

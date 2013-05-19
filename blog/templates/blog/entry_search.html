@@ -23,7 +23,7 @@
   {% endif %}
 
   <div class="blog_search_form">
-    <form action="{% url entry_search %}" method="post" id="post_search_form">
+    <form action="{% url "entry_search" %}" method="post" id="post_search_form">
 	{% csrf_token %}
     <p>
       <label for="search">Search</label>

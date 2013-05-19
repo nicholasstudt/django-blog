@@ -4,7 +4,7 @@
 <div class="blog_entry{% if not object.is_published %} draft{% endif %}">
 
   <h2 class="topic">{% if not object.is_published %}Draft: {% endif %}{{ object.headline|safe }}
-    {% if perms.blog.change_entry %}<span class="edit"><a href="{% url admin:blog_entry_change object.id %}">Edit</a></span>{% endif %} 
+    {% if perms.blog.change_entry %}<span class="edit"><a href="{% url "admin:blog_entry_change" object.id %}">Edit</a></span>{% endif %} 
   </h2>
 
   <div class="content" >
