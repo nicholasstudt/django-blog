@@ -39,12 +39,12 @@ urlpatterns = patterns('',
     url(r'^search/?$', EntrySearch.as_view(),
         name="entry_search"),
 
-    # # /feeds/tags, /feeds/latest,
-    # url(r'^feeds/latest/?$', LatestEntriesFeed(), 
-    #     name='feed_latest'),
+    # /feeds/tags, /feeds/latest,
+    url(r'^feeds/latest/?$', LatestEntriesFeed(), 
+        name='feed_latest'),
 
-    # url(r'^feeds/tags/(?P<tag>[-\w]+)/?$', LatestEntriesByTag(), 
-    #     name='feed_tags' ),
+    url(r'^feeds/tags/(?P<tag>[-\w]+)/?$', LatestEntriesByTag(), 
+        name='feed_tags' ),
 
     url(r'^feeds/comments/?$', LatestComments(), name='feed_comments' ),
 
@@ -52,9 +52,8 @@ urlpatterns = patterns('',
     
     url(r'^latest/?$', EntryLatest.as_view(), name="entry_latest"),
 
-    # # New RPC handling
-    # url(r'^rpc/?$', 'blog.rpc.xmlrpc.view', {'module': 'blog.rpc.metaweb
-    # log' }),
+    # New RPC handling
+    url(r'^rpc/?$', 'blog.rpc.xmlrpc.view', {'module': 'blog.rpc.metaweblog' }),
 
     url(r'^(?P<author>[-\w]+)/?$', EntryList.as_view(), 
         name="author_index"),
