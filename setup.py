@@ -53,7 +53,6 @@ setup(
     description = 'Simple Django blog.',
     packages = packages, 
     data_files = data_files,
-    scripts = [''],
 #    requires = ('django (>=1.0.2)',),
 )
 
