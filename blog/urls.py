@@ -1,4 +1,9 @@
-from django.conf.urls.defaults import *
+try:
+    from django.conf.urls import patterns, url, include
+except ImportError:
+    # for Django version less then 1.4
+    from django.conf.urls.defaults import patterns, url, include
+
 from blog.feeds import LatestEntriesByTag, LatestEntriesFeed, LatestComments
 from blog.views import EntryList, TagList, EntryLatest, EntryDetail, EntrySearch, EntryArchiveYear, EntryArchiveMonth, EntryArchiveDay, AuthorDetail, AuthorList
 
